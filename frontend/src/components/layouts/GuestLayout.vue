@@ -1,0 +1,115 @@
+<script setup>
+    import { useRouter } from 'vue-router'
+
+    const router = useRouter()
+
+    function goHome() {
+        const targetRoute = '/'
+
+        if (router.currentRoute.value.path === targetRoute) {
+            window.location.reload()
+        }else{
+            router.push(targetRoute)
+        }
+        
+    }
+</script>
+
+<template>
+    <header>
+        <div role="button" class="logo" @click="goHome">
+            <img src="/favicon.ico" alt="logo">
+            <h1>QuizUp</h1>
+        </div>
+        <nav>
+            <RouterLink to="/how-to-play" class="nav-item">Nasıl Oynanır?</RouterLink>
+            <p class="separator">&#x2502;</p>
+            <RouterLink to="/auth" class="nav-item-auth">Giriş Yap</RouterLink>
+            <RouterLink to="/auth" class="nav-item-auth">Kayıt Ol</RouterLink>
+        </nav>
+    </header>
+
+    <main>
+        <router-view></router-view>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 QuizUp</p>
+    </footer>
+</template>
+
+<style scoped>
+    header{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background-color: white;
+        color: black;
+        width: auto;
+        height: 50px;
+    }
+
+    .logo{
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+
+    nav{
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .nav-item, 
+    .nav-item-auth{
+        color: black;
+        text-decoration: none;
+        font-weight: bold;
+        align-content: center;
+    }
+
+    .nav-item{
+        transition: color 0.3s ease;
+    }
+
+    .nav-item:hover{
+        color: #ff6f61;
+        transition: 0.3s ease;
+    }
+
+    .nav-item-auth{
+        padding: 0.5rem 1rem;
+        border: 2px solid black;
+        border-radius: 20px;
+        background-color: yellow;
+        margin-left: auto;
+        box-shadow: 6px 6px 6px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s ease;
+    }
+
+    .nav-item-auth:hover{
+        background-color: orange;
+        transform: scale(1.05);
+        transition: 0.3s ease;
+    }
+
+    footer{
+        padding: 1rem 2rem;
+        text-align: center;
+        
+        background-color: white;
+        color: black;
+        bottom: 0;
+        width: auto;
+        height: 50px;
+    }
+
+    .separator{
+        font-size: 48px;
+        color: #ff6f61;
+    }
+    
+</style>

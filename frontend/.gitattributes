@@ -1,0 +1,7 @@
+*.json text eol=lf
+*.html text eol=lf
+*.md text eol=lf
+.gitignore text eol=lf
+* text=auto eol=lf
+*.vue text eol=crlf
+*.gitattributes text eol=crlf
