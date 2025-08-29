@@ -1,5 +1,7 @@
 <script setup>
-
+    const props = defineProps({
+        loadWelcomePage: Function
+    })
 </script>
 
 <template>
@@ -16,7 +18,7 @@
                 <div class="welcome-row">
                     <img src="/image.png" alt="" class="image">
                     <div class="start-buttons">
-                        <button @click="$router.push('./auth')">Hemen Başlayın &rarr;</button>
+                        <button @click="() => props.loadWelcomePage()">Hemen Başlayın &rarr;</button>
                         <button @click="$router.push('./how-to-play')">Nasıl Oynanır? &rarr;</button>
                     </div>
                     <img src="/image.png" alt="" class="image">

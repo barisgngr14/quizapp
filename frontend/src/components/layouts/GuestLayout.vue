@@ -1,7 +1,10 @@
 <script setup>
     import { useRouter } from 'vue-router'
+    import axios from 'axios'
+    import { useUserStore } from "@/stores/user"
 
     const router = useRouter()
+    const userStore = useUserStore()
 
     function goHome() {
         const targetRoute = '/'
@@ -13,6 +16,16 @@
         }
         
     }
+
+    function loadWelcomePage() {
+        axios.get('http://localhost:8080/api/login/1')
+               
+        .then(res =>{
+            userStore.setUser(res.data.user)
+            router.push(res.data.redirectPath);
+        })
+    }
+
 </script>
 
 <template>
@@ -25,12 +38,12 @@
             <RouterLink to="/how-to-play" class="nav-item">Nasıl Oynanır?</RouterLink>
             <p class="separator">&#x2502;</p>
             <RouterLink to="/auth" class="nav-item-auth">Giriş Yap</RouterLink>
-            <RouterLink to="/auth" class="nav-item-auth">Kayıt Ol</RouterLink>
+            <RouterLink to="/app" class="nav-item-auth">Kayıt Ol</RouterLink>
         </nav>
     </header>
 
     <main>
-        <router-view></router-view>
+        <router-view :loadWelcomePage="loadWelcomePage"></router-view>
     </main>
 
     <footer>
