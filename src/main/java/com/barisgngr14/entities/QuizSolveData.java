@@ -22,11 +22,11 @@ public class QuizSolveData {
 
     @OneToOne
     @JoinColumn(name="user_id")
-    private Users user;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name="quiz_id")
-    private Quizzes quiz;
+    private Quiz quiz;
 
     @Column(name = "quiz_solve_time")
     @DateTimeFormat(iso= DateTimeFormat.ISO.TIME)

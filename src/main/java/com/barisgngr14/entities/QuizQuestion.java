@@ -1,17 +1,23 @@
 package com.barisgngr14.entities;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
-public class QuizQuestionsID implements Serializable {
+@Table(name = "quiz_questions")
+@IdClass(QuizQuestionID.class)
+public class QuizQuestion {
+
+    @Id
+    @Column(name = "quiz_id")
     private String quizId;
+
+    @Id
+    @Column(name = "question_id")
     private String questionId;
 }

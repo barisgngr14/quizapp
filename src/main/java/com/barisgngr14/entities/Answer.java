@@ -10,18 +10,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "answers")
-public class Answers {
+public class Answer {
     @Id
     @Column(name = "answer_id")
     private String answerId;
 
     @ManyToOne
     @JoinColumn(name = "question_id")
-    private Questions question;
+    private Question question;
 
     @ManyToOne
     @JoinColumn(name = "option_id")
-    private Options option;
+    private Option option;
 
     @ManyToOne
     @JoinColumn(name = "solve_data_id")

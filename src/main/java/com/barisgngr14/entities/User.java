@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table (name = "users")
-public class Users {
+public class User {
 
     public enum Role{
         USER,

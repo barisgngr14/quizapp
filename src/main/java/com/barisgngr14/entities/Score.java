@@ -11,7 +11,8 @@ import java.time.Month;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Scores {
+@Table(name = "scores")
+public class Score {
 
     @Id
     @Column(name = "score_id")
@@ -19,7 +20,7 @@ public class Scores {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private Users user;
+    private User user;
 
     @Column(name = "total_score")
     private Long totalScore;

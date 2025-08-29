@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "user_groups")
-public class Groups {
+public class Group {
     @Id
     @Column(name = "group_id")
     private String groupId;
@@ -32,6 +32,6 @@ public class Groups {
             joinColumns = @JoinColumn(name = "group_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private List<Users> creator;
+    private List<User> creator;
 
 }

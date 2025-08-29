@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table (name="suggestions")
-public class Suggestions {
+public class Suggestion {
 
     @Id
     @Column(name = "suggestion_id")
@@ -18,7 +18,7 @@ public class Suggestions {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private Users user;
+    private User user;
 
     @Column(name = "suggestion_text", columnDefinition = "TEXT")
     private String suggestionText;

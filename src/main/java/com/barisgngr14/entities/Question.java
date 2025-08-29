@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "questions")
-public class Questions {
+public class Question {
 
     public enum Difficulty{
         EASY,
@@ -43,5 +43,5 @@ public class Questions {
 
     @ManyToOne
     @JoinColumn(name = "correct_option_id")
-    private Options correctOption;
+    private Option correctOption;
 }

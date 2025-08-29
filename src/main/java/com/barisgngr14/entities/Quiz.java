@@ -14,7 +14,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "quizzes")
-public class Quizzes {
+public class Quiz {
 
     @Id
     @Column(name = "quiz_id")
@@ -25,7 +25,7 @@ public class Quizzes {
 
     @ManyToOne
     @JoinColumn(name = "quiz_group" , columnDefinition = "VARCHAR(255) DEFAULT '0'")
-    private Groups quizGroup;
+    private Group quizGroup;
 
     @Column(name = "question_count")
     private Integer questionCount;
