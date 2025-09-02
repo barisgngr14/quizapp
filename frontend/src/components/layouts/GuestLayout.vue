@@ -2,6 +2,7 @@
     import { useRouter } from 'vue-router'
     import axios from 'axios'
     import { useUserStore } from "@/stores/user"
+    import { ref } from 'vue'
 
     const router = useRouter()
     const userStore = useUserStore()
@@ -37,8 +38,8 @@
         <nav>
             <RouterLink to="/how-to-play" class="nav-item">Nasıl Oynanır?</RouterLink>
             <p class="separator">&#x2502;</p>
-            <RouterLink to="/auth" class="nav-item-auth">Giriş Yap</RouterLink>
-            <RouterLink to="/app" class="nav-item-auth">Kayıt Ol</RouterLink>
+            <RouterLink :to="{ name: 'LoginSignUp', params: { tab: 'login' }}" class="nav-item-auth">Giriş Yap</RouterLink>
+            <RouterLink :to="{ name: 'LoginSignUp', params: { tab: 'signup' }}" class="nav-item-auth">Kayıt Ol</RouterLink>
         </nav>
     </header>
 
@@ -57,7 +58,7 @@
         justify-content: space-between;
         align-items: center;
         padding: 1rem 2rem;
-        background-color: white;
+        background: linear-gradient(135deg, rgb(249, 201, 169), rgb(241, 202, 252));
         color: black;
         width: auto;
         height: 50px;
@@ -89,7 +90,7 @@
     }
 
     .nav-item:hover{
-        color: #ff6f61;
+        color: rgb(195, 240, 236);
         transition: 0.3s ease;
     }
 
@@ -97,14 +98,14 @@
         padding: 0.5rem 1rem;
         border: 2px solid black;
         border-radius: 20px;
-        background-color: yellow;
+        background-image: linear-gradient(135deg, rgb(249, 201, 169), rgb(241, 202, 252));
         margin-left: auto;
         box-shadow: 6px 6px 6px rgba(0, 0, 0, 0.2);
-        transition: background-color 0.3s ease;
+        transition: 0.3s ease;
     }
 
     .nav-item-auth:hover{
-        background-color: orange;
+        background-image: linear-gradient(to left, rgb(195, 240, 236), rgb(195, 240, 236));
         transform: scale(1.05);
         transition: 0.3s ease;
     }
@@ -112,8 +113,7 @@
     footer{
         padding: 1rem 2rem;
         text-align: center;
-        
-        background-color: white;
+        background: linear-gradient(135deg, rgb(249, 201, 169), rgb(241, 202, 252));
         color: black;
         bottom: 0;
         width: auto;
@@ -122,7 +122,6 @@
 
     .separator{
         font-size: 48px;
-        color: #ff6f61;
     }
     
 </style>

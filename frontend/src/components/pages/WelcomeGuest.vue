@@ -51,7 +51,7 @@
         display: flex;
         flex-direction: column;
         padding: 0;
-        gap: 2rem;
+        gap: 2rem;;
     }
 
     .welcome-content,
@@ -75,7 +75,7 @@
         height: 75vh;
         box-sizing: border-box;
         justify-content: center;
-        background-color: #ff6f61;
+        background-color: #f3f0ea;
     }
 
     .welcome-content:not(.has-text) .welcome-row{
@@ -109,19 +109,19 @@
     }
 
     .start-buttons button{
-        background-color: yellow;
+        background: linear-gradient(135deg, rgb(249, 201, 169), rgb(241, 202, 252));
         color: black;
         border: none;
         padding: 1rem 2rem;
         font-size: 1.2rem;
         cursor: pointer;
         border-radius: 8px;
-        transition: background-color 0.3s ease;
+        transition: 0.3s ease;
     }
 
     .start-buttons button:hover{
         transform: scale(1.05);
-        background-color: orange;
+        background: rgb(195, 240, 236);
         transition: 0.3s ease;
     }
 

@@ -64,7 +64,7 @@
     .menu-btns-layout {
         width: 100%;
         height: 515px;
-        background-color: rgb(255, 255, 126);
+        background-color: #f3f0ea;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         grid-template-rows: auto auto auto;

@@ -9,6 +9,17 @@
 
     const userStore = useUserStore()
 
+    const menuItems = [
+        { label: 'Ana Sayfa', path: '/app', icon: 'fa-solid fa-house-chimney-user' },
+        { label: 'Profilim', path: '/app', icon: 'fa-solid fa-user' },
+        { label: 'Quize Katıl', path: '/app', icon: 'fa-solid fa-play' },
+        { label: 'Skorbord', path: '/app', icon: 'fa-solid fa-ranking-star' },
+        { label: 'Geçmiş Sonuçlarım', path: '/app/dashboard', icon: 'fa-solid fa-clock' },
+        { label: 'Gruplarım', path: '/app', icon: 'fa-solid fa-user-group' },
+        { label: 'Soru Öner', path: '/app', icon: 'fa-solid fa-question' },
+        { label: 'Çıkış', path: '/app', icon: 'fa-solid fa-arrow-right-from-bracket' }
+    ]
+
 </script>
 
 <template>
@@ -27,37 +38,11 @@
             <p>{{userStore.currentUser.username}}</p>
         </div>
         <ul>
-            <li>
-                <i class="fa-solid fa-house-chimney-user"></i>
-                <RouterLink to="/app">Ana Sayfa</RouterLink>
-            </li>
-            <li>
-                <i class="fa-solid fa-user"></i>
-                <RouterLink to="/app">Profilim</RouterLink>
-            </li>
-            <li>
-                <i class="fa-solid fa-play"></i>
-                <RouterLink to="/app">Quize Katıl</RouterLink>
-            </li>
-            <li>
-                <i class="fa-solid fa-ranking-star"></i>
-                <RouterLink to="/app">Skorbord</RouterLink>
-            </li>
-            <li>
-                <i class="fa-solid fa-clock"></i>
-                <RouterLink to="/app">Geçmiş Sonuçlarım</RouterLink>
-            </li>
-            <li>
-                <i class="fa-solid fa-user-group"></i>
-                <RouterLink to="/app">Gruplarım</RouterLink>
-            </li>
-            <li>
-                <i class="fa-solid fa-question"></i>
-                <RouterLink to="/app">Soru Öner</RouterLink>
-            </li>
-            <li>
-                <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                <RouterLink to="/app">Çıkış</RouterLink>
+            <li v-for="item in menuItems" :key="item.label">
+                <RouterLink :to="item.path">
+                    <i :class="item.icon"></i>
+                    <span>{{ item.label }}</span>
+                </RouterLink>
             </li>
         </ul>
     </div>
@@ -68,8 +53,8 @@
 </template>
 
 <style scoped>
-    header, main, .sidebar{
-        background-color: #ff6f61;
+    header, main{
+        background-color: #f3f0ea;
     }
 
     header{
@@ -88,6 +73,7 @@
         z-index: 1000;
         left: -300px;
         transition: left 0.3s ease;
+        background: linear-gradient(135deg, rgb(249, 201, 169), rgb(241, 202, 252));
     }
 
     .sidebar.open{
@@ -109,20 +95,25 @@
     }
 
     .sidebar ul li{
-        padding: 1rem ;
         border-radius: 30px;
         transition: 0.3s ease;
     }
 
     .sidebar ul li a{
         text-decoration: none;
-        color:black;
+        color: inherit;
         padding: 0 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        height: 100%;
+        padding: 1rem ;
     }
 
     .sidebar ul li:hover{
         transform: scale(1.05);
-        background-color: rgb(255, 255, 126);
+        background-color: rgb(195, 240, 236);
     }
 
     .logo{
@@ -148,4 +139,22 @@
         margin-bottom: 0;
         margin-top: 1rem;
     }
+
+    @media (max-height: 700px) {
+        .sidebar {
+            height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .sidebar-link {
+            padding: 10px 12px;
+            font-size: 14px;
+        }
+
+        .toggle-btn {
+            top: 8px;
+        }
+    }
+
 </style>

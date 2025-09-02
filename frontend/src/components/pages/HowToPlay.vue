@@ -87,7 +87,7 @@
         height: 75vh;
         box-sizing: border-box;
         justify-content: center;
-        background-color: #ff6f61;
+        background-color: #f3f0ea;
     }
 
     .howtoplay-row{
