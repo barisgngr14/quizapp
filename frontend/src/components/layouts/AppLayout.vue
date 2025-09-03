@@ -1,7 +1,12 @@
 <script setup>
     import { ref } from 'vue'
     import { useUserStore } from '@/stores/user'
+    import { onMounted } from 'vue'
+    import axios from 'axios'
+    import { useRouter } from 'vue-router'
+
     const isSidebarActive = ref(false)
+    const router = useRouter()
     
     const toggleSidebar = () => {
         isSidebarActive.value = !isSidebarActive.value
@@ -9,16 +14,42 @@
 
     const userStore = useUserStore()
 
+    const logout = () => {
+        userStore.clearUser()
+    }
+
     const menuItems = [
-        { label: 'Ana Sayfa', path: '/app', icon: 'fa-solid fa-house-chimney-user' },
-        { label: 'Profilim', path: '/app', icon: 'fa-solid fa-user' },
-        { label: 'Quize Katıl', path: '/app', icon: 'fa-solid fa-play' },
-        { label: 'Skorbord', path: '/app', icon: 'fa-solid fa-ranking-star' },
-        { label: 'Geçmiş Sonuçlarım', path: '/app/dashboard', icon: 'fa-solid fa-clock' },
-        { label: 'Gruplarım', path: '/app', icon: 'fa-solid fa-user-group' },
-        { label: 'Soru Öner', path: '/app', icon: 'fa-solid fa-question' },
-        { label: 'Çıkış', path: '/app', icon: 'fa-solid fa-arrow-right-from-bracket' }
+        { label: 'Ana Sayfa', path: '/app', icon: 'fa-solid fa-house-chimney-user', action: (() => router.push('/app'))},
+        { label: 'Profilim', path: '/app', icon: 'fa-solid fa-user', action: (() => router.push('/app'))},
+        { label: 'Quize Katıl', path: '/app', icon: 'fa-solid fa-play', action: (() => router.push('/app'))},
+        { label: 'Skorbord', path: '/app', icon: 'fa-solid fa-ranking-star', action: (() => router.push('/app'))},
+        { label: 'Geçmiş Sonuçlarım', path: '/app/dashboard', icon: 'fa-solid fa-clock', action: (() => router.push('/app/dashboard'))},
+        { label: 'Gruplarım', path: '/app', icon: 'fa-solid fa-user-group', action: (() => router.push('/app')) },
+        { label: 'Soru Öner', path: '/app', icon: 'fa-solid fa-question', action: (() => router.push('/app'))},
+        { label: 'Çıkış', path: '/auth/login', icon: 'fa-solid fa-arrow-right-from-bracket', action: logout}
     ]
+
+    onMounted(async() => {
+        const store = useUserStore()
+        if (!store.token || Date.now() > store.tokenExp) {
+            store.clearUser()
+            router.push('/auth/login')
+        }
+
+        if(store.currentUser) return
+
+        try {
+            const { data } = await axios.get('http://localhost:8080/api/verify', {
+                headers: {
+                    Authorization: `${store.token}`
+                }
+            })
+            store.setUser(data, store.token)
+        } catch {
+            store.clearUser()
+            router.push('/auth/login')
+        }
+    })
 
 </script>
 
@@ -39,7 +70,7 @@
         </div>
         <ul>
             <li v-for="item in menuItems" :key="item.label">
-                <RouterLink :to="item.path">
+                <RouterLink :to="item.path" @click="item.action">
                     <i :class="item.icon"></i>
                     <span>{{ item.label }}</span>
                 </RouterLink>

@@ -1,11 +1,8 @@
 <script setup>
     import { useRouter } from 'vue-router'
-    import axios from 'axios'
     import { useUserStore } from "@/stores/user"
-    import { ref } from 'vue'
 
     const router = useRouter()
-    const userStore = useUserStore()
 
     function goHome() {
         const targetRoute = '/'
@@ -19,12 +16,7 @@
     }
 
     function loadWelcomePage() {
-        axios.get('http://localhost:8080/api/login/1')
-               
-        .then(res =>{
-            userStore.setUser(res.data.user)
-            router.push(res.data.redirectPath);
-        })
+        router.push('/auth/login');
     }
 
 </script>

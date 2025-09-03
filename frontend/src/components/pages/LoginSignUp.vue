@@ -1,7 +1,8 @@
 <script setup>
   import { ref } from 'vue'
   import axios from 'axios'
-  import { useRoute } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
+  import { useUserStore } from '@/stores/user'
 
   const email = ref('')
   const password = ref('')
@@ -10,6 +11,7 @@
   const surname = ref('')
   const username = ref('')
   const route = useRoute()
+  const router = useRouter()
   const activeTab = ref(route.params.tab || 'login')
 
   const login = async () => {
@@ -18,7 +20,20 @@
         email: email.value,
         password: password.value
       })
-      alert(data)
+      
+      const token = data.token;
+
+      await axios.get('http://localhost:8080/api/verify', {
+        headers: {
+          Authorization: `${token}`
+        }
+      }).then(res => {
+        const userDto = res.data;
+        const userStore = useUserStore();
+        userStore.setUser(userDto, token)
+        router.push(userDto.redirectPath)
+      })
+
     } catch (error) {
       console.error('Login Hatası:', error)
       alert(error.response?.data || 'Sunucu hatası.')

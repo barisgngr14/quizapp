@@ -6,6 +6,8 @@ import HowToPlay from '@/components/pages/HowToPlay.vue'
 import WelcomeUser from '@/components/pages/WelcomeUser.vue'
 import Dashboard from '@/components/pages/Dashboard.vue'
 import LoginSignUp from '@/components/pages/LoginSignUp.vue'
+import AdminDashboard from '@/components/pages/AdminDashboard.vue'
+import { useUserStore } from '@/stores/user'
 
 const routes = [
     {
@@ -22,12 +24,15 @@ const routes = [
         component: AppLayout,
         children: [
             {path: '', name: 'WelcomeUser', component: WelcomeUser},
-            {path: 'dashboard', name: 'Dashboard', component: Dashboard, props: true}
-        ]
+            {path: 'dashboard', name: 'Dashboard', component: Dashboard, props: true, meta: { requiresAuth: true }}
+        ],
     },
     {
         path: '/admin',
         component: AppLayout,
+        children: [
+            {path: 'dashboard', name: 'AdminDashboard', component: AdminDashboard}
+        ],
         props: true
     }
 ]
@@ -35,6 +40,19 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  const store = useUserStore()
+  if (store.token && Date.now() > store.tokenExp) {
+    store.clearUser()
+    return next('/auth/login')
+  }
+  if (to.meta.requiresAuth && !store.token) {
+    next('/auth/login')
+  } else {
+    next()
+  }
 })
 
 export default router
