@@ -10,7 +10,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DtoLoginResponse {
-    private DtoUserResponse user;
+    private String name;
+    private String surname;
+    private String username;
     private String redirectPath;
-
 }
