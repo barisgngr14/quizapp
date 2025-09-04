@@ -5,7 +5,7 @@
     import axios from 'axios'
     import { useRouter } from 'vue-router'
 
-    const isSidebarActive = ref(false)
+    const isSidebarActive = ref(true)
     const router = useRouter()
     
     const toggleSidebar = () => {
@@ -19,13 +19,13 @@
     }
 
     const menuItems = [
-        { label: 'Ana Sayfa', path: '/app', icon: 'fa-solid fa-house-chimney-user', action: (() => router.push('/app'))},
-        { label: 'Profilim', path: '/app', icon: 'fa-solid fa-user', action: (() => router.push('/app'))},
-        { label: 'Quize Katıl', path: '/app', icon: 'fa-solid fa-play', action: (() => router.push('/app'))},
-        { label: 'Skorbord', path: '/app', icon: 'fa-solid fa-ranking-star', action: (() => router.push('/app'))},
+        { label: 'Ana Sayfa', path: '/app/dashboard', icon: 'fa-solid fa-house-chimney-user', action: (() => router.push('/app/dashboard'))},
+        { label: 'Profilim', path: '/app/dashboard', icon: 'fa-solid fa-user', action: (() => router.push('/app/dashboard'))},
+        { label: 'Quize Katıl', path: '/app/dashboard', icon: 'fa-solid fa-play', action: (() => router.push('/app/dashboard'))},
+        { label: 'Skorbord', path: '/app/dashboard', icon: 'fa-solid fa-ranking-star', action: (() => router.push('/app/dashboard'))},
         { label: 'Geçmiş Sonuçlarım', path: '/app/dashboard', icon: 'fa-solid fa-clock', action: (() => router.push('/app/dashboard'))},
-        { label: 'Gruplarım', path: '/app', icon: 'fa-solid fa-user-group', action: (() => router.push('/app')) },
-        { label: 'Soru Öner', path: '/app', icon: 'fa-solid fa-question', action: (() => router.push('/app'))},
+        { label: 'Gruplarım', path: '/app/dashboard', icon: 'fa-solid fa-user-group', action: (() => router.push('/app/dashboard')) },
+        { label: 'Soru Öner', path: '/app/dashboard', icon: 'fa-solid fa-question', action: (() => router.push('/app/dashboard'))},
         { label: 'Çıkış', path: '/auth/login', icon: 'fa-solid fa-arrow-right-from-bracket', action: logout}
     ]
 
@@ -55,7 +55,9 @@
 
 <template>
     <header>
-        <button class="sidebar-button" @click="toggleSidebar"><i class="fa-solid fa-bars"></i></button>  
+        <button class="sidebar-button" @click="toggleSidebar"><i class="fa-solid fa-bars"></i></button>
+        <img src="/favicon.ico" alt="logo">
+        <h1>QuizUp</h1>  
     </header>
 
     <div class="sidebar" :class="{ open: isSidebarActive }">
@@ -78,20 +80,27 @@
         </ul>
     </div>
 
-    <main>
+    <main :class="{shifted: isSidebarActive}">
         <router-view></router-view>
     </main>
 </template>
 
 <style scoped>
-    header, main{
-        background-color: #f3f0ea;
-    }
 
     header{
         display: flex;
         padding: 0.5rem 1rem;
         height: 50px;
+        background: linear-gradient(135deg, rgb(249, 201, 169), rgb(241, 202, 252));
+        align-items: center;
+        gap: 0.5rem;
+        background: linear-gradient(135deg, rgb(249, 201, 169), rgb(241, 202, 252));
+        color: black;
+        width: auto;
+    }
+
+    header h1{
+        margin: 0;
     }
 
     .sidebar{
@@ -109,6 +118,19 @@
 
     .sidebar.open{
         left: 0;
+    }
+
+    main {
+        display: flex;
+        flex-wrap: wrap;
+        transition: transform 0.3s ease;
+        transform-origin: right;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    main.shifted{
+        transform: scale(0.85);
     }
 
     .sidebar-button,

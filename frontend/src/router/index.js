@@ -3,7 +3,6 @@ import GuestLayout from '@/components/layouts/GuestLayout.vue'
 import AppLayout from '@/components/layouts/AppLayout.vue'
 import WelcomeGuest from '@/components/pages/WelcomeGuest.vue'
 import HowToPlay from '@/components/pages/HowToPlay.vue'
-import WelcomeUser from '@/components/pages/WelcomeUser.vue'
 import Dashboard from '@/components/pages/Dashboard.vue'
 import LoginSignUp from '@/components/pages/LoginSignUp.vue'
 import AdminDashboard from '@/components/pages/AdminDashboard.vue'
@@ -23,7 +22,6 @@ const routes = [
         path: '/app',
         component: AppLayout,
         children: [
-            {path: '', name: 'WelcomeUser', component: WelcomeUser},
             {path: 'dashboard', name: 'Dashboard', component: Dashboard, props: true, meta: { requiresAuth: true }}
         ],
     },
