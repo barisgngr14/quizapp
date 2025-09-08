@@ -3,10 +3,20 @@ import GuestLayout from '@/components/layouts/GuestLayout.vue'
 import AppLayout from '@/components/layouts/AppLayout.vue'
 import WelcomeGuest from '@/components/pages/WelcomeGuest.vue'
 import HowToPlay from '@/components/pages/HowToPlay.vue'
-import Dashboard from '@/components/pages/Dashboard.vue'
+import UserDashboard from '@/components/pages/UserDashboard.vue'
 import LoginSignUp from '@/components/pages/LoginSignUp.vue'
-import AdminDashboard from '@/components/pages/AdminDashboard.vue'
+import QQManagement from '@/components/pages/QQManagement.vue'
 import { useUserStore } from '@/stores/user'
+import AdminDashboard from '@/components/pages/AdminDashboard.vue'
+import AdminProfile from '@/components/pages/AdminProfile.vue'
+import EnterQuiz from '@/components/pages/EnterQuiz.vue'
+import GroupManage from '@/components/pages/GroupManage.vue'
+import MyGroups from '@/components/pages/MyGroups.vue'
+import ScoreManage from '@/components/pages/ScoreManage.vue'
+import Scoreboard from '@/components/pages/Scoreboard.vue'
+import SuggestQ from '@/components/pages/SuggestQ.vue'
+import SuggestionManage from '@/components/pages/SuggestionManage.vue'
+import UserProfile from '@/components/pages/UserProfile.vue'
 
 const routes = [
     {
@@ -22,14 +32,24 @@ const routes = [
         path: '/app',
         component: AppLayout,
         children: [
-            {path: 'dashboard', name: 'Dashboard', component: Dashboard, props: true, meta: { requiresAuth: true }}
+            {path: 'dashboard', name: 'UserDashboard', component: UserDashboard, props: true, meta: { requiresAuth: true }},
+            {path: 'profile', name: 'UserProfile', component: UserProfile, props: true, meta: { requiresAuth: true }},
+            {path: 'enter-quiz', name: 'EnterQuiz', component: EnterQuiz, props: true, meta: { requiresAuth: true }},
+            {path: 'scoreboard', name: 'Scoreboard', component: Scoreboard, props: true, meta: { requiresAuth: true }},
+            {path: 'my-groups', name: 'MyGroups', component: MyGroups, props: true, meta: { requiresAuth: true }},
+            {path: 'suggest-question', name: 'SuggestQ', component: SuggestQ, props: true, meta: { requiresAuth: true }}
         ],
     },
     {
         path: '/admin',
         component: AppLayout,
         children: [
-            {path: 'dashboard', name: 'AdminDashboard', component: AdminDashboard}
+          {path: 'dashboard', name: 'AdminDashboard', component: AdminDashboard, props: true, meta: { requiresAuth: true }},
+          {path: 'profile', name: 'AdminProfile', component: AdminProfile, props: true, meta: { requiresAuth: true }},
+          {path: 'manage-qq', name: 'QQManagement', component: QQManagement, props: true, meta: { requiresAuth: true }},
+          {path: 'manage-scores', name: 'ScoreManage', component: ScoreManage, props: true, meta: { requiresAuth: true }},
+          {path: 'manage-groups', name: 'GroupManage', component: GroupManage, props: true, meta: { requiresAuth: true }},
+          {path: 'manage-suggestions', name: 'SuggestionManage', component: SuggestionManage, props: true, meta: { requiresAuth: true }},
         ],
         props: true
     }
@@ -42,14 +62,14 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const store = useUserStore()
+  if (to.meta.requiresAuth && !store.token) {
+    return next('/auth/login')
+  } else {
+    next()
+  }
   if (store.token && Date.now() > store.tokenExp) {
     store.clearUser()
     return next('/auth/login')
-  }
-  if (to.meta.requiresAuth && !store.token) {
-    next('/auth/login')
-  } else {
-    next()
   }
 })
 

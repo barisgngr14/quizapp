@@ -107,20 +107,20 @@
         height: 100%;
     }
 
-    .quizzes-container{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: 40%;
-    }
-
     .dashboard-content{
         display: flex;
         flex-direction: row;
         justify-content: space-around;
         align-items: flex-end;
         min-height: calc(80vh - 166px);
+    }
+
+    .quizzes-container{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 40%;
     }
 
     .quizzes-content{

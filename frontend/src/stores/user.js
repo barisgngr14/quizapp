@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { getTokenExpiration } from '@/utils/jwt'
 
 export const useUserStore = defineStore('user', () => {
     const currentUser = ref({
         name: null,
         surname: null,
-        username: null
+        username: null,
+        redirectPath: null
     })
 
     const token = ref(null)
@@ -22,7 +23,8 @@ export const useUserStore = defineStore('user', () => {
         currentUser.value = {
             name: null,
             surname: null,
-            username: null
+            username: null,
+            redirectPath: null
         }
         token.value = null
         tokenExp.value = null

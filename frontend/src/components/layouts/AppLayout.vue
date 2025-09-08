@@ -1,9 +1,10 @@
 <script setup>
     import { ref } from 'vue'
     import { useUserStore } from '@/stores/user'
-    import { onMounted } from 'vue'
+    import { onMounted , computed} from 'vue'
     import axios from 'axios'
     import { useRouter } from 'vue-router'
+    import { userItems, adminItems } from '@/utils/sidebar-items'
 
     const isSidebarActive = ref(true)
     const router = useRouter()
@@ -18,16 +19,38 @@
         userStore.clearUser()
     }
 
-    const menuItems = [
-        { label: 'Ana Sayfa', path: '/app/dashboard', icon: 'fa-solid fa-house-chimney-user', action: (() => router.push('/app/dashboard'))},
-        { label: 'Profilim', path: '/app/dashboard', icon: 'fa-solid fa-user', action: (() => router.push('/app/dashboard'))},
-        { label: 'Quize Katıl', path: '/app/dashboard', icon: 'fa-solid fa-play', action: (() => router.push('/app/dashboard'))},
-        { label: 'Skorbord', path: '/app/dashboard', icon: 'fa-solid fa-ranking-star', action: (() => router.push('/app/dashboard'))},
-        { label: 'Geçmiş Sonuçlarım', path: '/app/dashboard', icon: 'fa-solid fa-clock', action: (() => router.push('/app/dashboard'))},
-        { label: 'Gruplarım', path: '/app/dashboard', icon: 'fa-solid fa-user-group', action: (() => router.push('/app/dashboard')) },
-        { label: 'Soru Öner', path: '/app/dashboard', icon: 'fa-solid fa-question', action: (() => router.push('/app/dashboard'))},
-        { label: 'Çıkış', path: '/auth/login', icon: 'fa-solid fa-arrow-right-from-bracket', action: logout}
-    ]
+    const actionsMap = {
+        logout,
+        goToDashboard: () => router.push('/app/dashboard'),
+        goToProfile: () => router.push('/app/profile'),
+        enterQuiz: () => router.push('/app/enter-quiz'),
+        goToScoreboard: () => router.push('/app/scoreboard'),
+        goToMyGroups: () => router.push('/app/my-groups'),
+        goToSuggest: () => router.push('/app/suggest-question'),
+
+        goToAdminDash: () => router.push('/admin/dashboard'),
+        goToAdminProfile: () => router.push('/admin/profile'),
+        goToQQManage: () => router.push('/admin/manage-qq'),
+        goToScoreManage: () => router.push('/admin/manage-scores'),
+        goToGroupManage: () => router.push('/admin/manage-groups'),
+        goToSuggestManage: () => router.push('/admin/manage-suggestions')
+    };
+
+    const handleAction = (actionKey) => {
+        const fn = actionsMap[actionKey];
+        if(typeof fn === 'function'){
+            fn();
+        } else {
+            console.warn(`${actionKey} metodu bulunamadı`);
+        }
+    }
+
+    const menuItems = computed(() => {
+        if (typeof userStore.currentUser.redirectPath === 'string' && userStore.currentUser.redirectPath.includes('admin')) {
+            return adminItems
+        }
+        return userItems
+    })
 
     onMounted(async() => {
         const store = useUserStore()
@@ -72,12 +95,15 @@
         </div>
         <ul>
             <li v-for="item in menuItems" :key="item.label">
-                <RouterLink :to="item.path" @click="item.action">
+                <RouterLink :to="item.path" @click="handleAction(item.action)">
                     <i :class="item.icon"></i>
                     <span>{{ item.label }}</span>
                 </RouterLink>
             </li>
         </ul>
+        <div class="sidebar-footer">
+            <p>&copy; 2025 QuizUp</p>
+        </div>
     </div>
 
     <main :class="{shifted: isSidebarActive}">
@@ -167,6 +193,12 @@
     .sidebar ul li:hover{
         transform: scale(1.05);
         background-color: rgb(195, 240, 236);
+    }
+
+    .sidebar-footer{
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .logo{
