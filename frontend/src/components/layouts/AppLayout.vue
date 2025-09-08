@@ -5,13 +5,16 @@
     import axios from 'axios'
     import { useRouter } from 'vue-router'
     import { userItems, adminItems } from '@/utils/sidebar-items'
+    import { changeSidebarState } from '@/stores/changeSidebarState'
 
-    const isSidebarActive = ref(true)
+    //const isSidebarActive = ref(true)
     const router = useRouter()
     
-    const toggleSidebar = () => {
-        isSidebarActive.value = !isSidebarActive.value
-    }
+    //const toggleSidebar = () => {
+      //  isSidebarActive.value = !isSidebarActive.value
+    //}
+
+    const changeState = changeSidebarState()
 
     const userStore = useUserStore()
 
@@ -78,13 +81,13 @@
 
 <template>
     <header>
-        <button class="sidebar-button" @click="toggleSidebar"><i class="fa-solid fa-bars"></i></button>
+        <button class="sidebar-button" @click="changeState.toggleSidebar"><i class="fa-solid fa-bars"></i></button>
         <img src="/favicon.ico" alt="logo">
         <h1>QuizUp</h1>  
     </header>
 
-    <div class="sidebar" :class="{ open: isSidebarActive }">
-        <button class="close-btn" @click="toggleSidebar"><i class="fa-solid fa-xmark"></i></button>
+    <div class="sidebar" :class="{ open: changeState.isSidebarActive }">
+        <button class="close-btn" @click="changeState.toggleSidebar"><i class="fa-solid fa-xmark"></i></button>
         <div class="logo">
             <img src="/favicon.ico" alt="logo">
             <h1>QuizUp</h1>
@@ -106,7 +109,7 @@
         </div>
     </div>
 
-    <main :class="{shifted: isSidebarActive}">
+    <main :class="{shifted: changeState.isSidebarActive}">
         <router-view></router-view>
     </main>
 </template>
@@ -136,7 +139,7 @@
         height: 100%;
         box-shadow: 2px 0 5px rgba(0,0,0,0.1);
         padding: 1rem;
-        z-index: 1000;
+        z-index: 3;
         left: -300px;
         transition: left 0.3s ease;
         background: linear-gradient(135deg, rgb(249, 201, 169), rgb(241, 202, 252));

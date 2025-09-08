@@ -1,5 +1,6 @@
 <script setup>
-
+    import AddItemForms from '../AddItemForms.vue';
+    import { openModal } from '@/utils/useModal';
 </script>
 
 <template>
@@ -134,9 +135,11 @@
             </table>
         </div>
         <div class="add-buttons">
-            <button><i class="fa-solid fa-plus"></i> Soru Ekle</button>
-            <button><i class="fa-solid fa-plus"></i> Quiz Ekle</button>
+            <a-button @click="openModal('question')"><i class="fa-solid fa-plus"></i> Soru Ekle</a-button>
+            <a-button @click="openModal('quiz')"><i class="fa-solid fa-plus"></i> Quiz Ekle</a-button>
         </div>
+
+        <add-item-forms></add-item-forms>
     </section>
 </template>
 

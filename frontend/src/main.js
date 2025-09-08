@@ -4,5 +4,6 @@ import router from './router'
 import './assets/main.css'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedState from "pinia-plugin-persistedstate"
+import Antd from 'ant-design-vue'
 
-createApp(App).use(router).use(createPinia().use(piniaPluginPersistedState)).mount('#app')
+createApp(App).use(router).use(createPinia().use(piniaPluginPersistedState)).use(Antd).mount('#app')
