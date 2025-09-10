@@ -8,7 +8,6 @@ import com.barisgngr14.repositories.UserRepository;
 import com.barisgngr14.services.IAuthService;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -81,7 +80,7 @@ public class AuthServiceImpl implements IAuthService {
                 Optional<User> optional = userRepository.findByUsername(extractUsername(token));
                 User dbUser = optional.get();
                 if(dbUser.getRole().name().equals("ADMIN")){
-                    userDetail.setRedirectPath("/admin/dashboard");
+                    userDetail.setRedirectPath("/admin/manage-qq");
                 }else{
                     userDetail.setRedirectPath("/app/dashboard");
                 }

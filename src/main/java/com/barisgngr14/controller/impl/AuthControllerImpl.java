@@ -17,7 +17,11 @@ import java.util.Map;
 public class AuthControllerImpl implements IAuthController {
 
     @Autowired
-    private IAuthService authService;
+    private final IAuthService authService;
+
+    public AuthControllerImpl(IAuthService authService) {
+        this.authService = authService;
+    }
 
     @PostMapping(path = "/login")
     @Override
