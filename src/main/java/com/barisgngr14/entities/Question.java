@@ -41,7 +41,4 @@ public class Question {
     @Column(name = "score")
     private Integer score;
 
-    @ManyToOne
-    @JoinColumn(name = "correct_option_id")
-    private Option correctOption;
 }
