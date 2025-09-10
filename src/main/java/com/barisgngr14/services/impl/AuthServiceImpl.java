@@ -8,6 +8,7 @@ import com.barisgngr14.repositories.UserRepository;
 import com.barisgngr14.services.IAuthService;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,7 +43,7 @@ public class AuthServiceImpl implements IAuthService {
         if(optional.isPresent()){
             User dbUser = optional.get();
             if(checkPassword(userLoginData.getPassword(), dbUser.getHashedPassword())){
-                return createToken(dbUser.getUsername());
+                return createToken(dbUser.getUsername(), dbUser.getRole().name());
             }
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
@@ -99,9 +100,10 @@ public class AuthServiceImpl implements IAuthService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createToken(String username) {
+    public String createToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 3600000))
                 .signWith(getKey())

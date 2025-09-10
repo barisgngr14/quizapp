@@ -1,6 +1,7 @@
 package com.barisgngr14.services.impl;
 
 import com.barisgngr14.dto.DtoNewQuestion;
+import com.barisgngr14.dto.DtoQuestion;
 import com.barisgngr14.entities.Option;
 import com.barisgngr14.entities.Question;
 import com.barisgngr14.mappers.OptionMapper;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionServiceImpl implements IQuestionService {
@@ -38,5 +40,14 @@ public class QuestionServiceImpl implements IQuestionService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public List<DtoQuestion> getAllQuestions() {
+        List<Question> dbQuestions = questionRepository.findAll();
+
+        return dbQuestions.stream()
+                .map(QuestionMapper::toDtoQuestion)
+                .collect(Collectors.toList());
     }
 }

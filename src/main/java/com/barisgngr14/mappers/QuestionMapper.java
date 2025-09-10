@@ -1,6 +1,7 @@
 package com.barisgngr14.mappers;
 
 import com.barisgngr14.dto.DtoNewQuestion;
+import com.barisgngr14.dto.DtoQuestion;
 import com.barisgngr14.entities.Option;
 import com.barisgngr14.entities.Question;
 
@@ -19,5 +20,16 @@ public class QuestionMapper {
         newQuestion.setDifficulty(question.getDifficulty());
 
         return newQuestion;
+    }
+
+    public static DtoQuestion toDtoQuestion(Question question){
+        DtoQuestion dtoQuestion = new DtoQuestion();
+        dtoQuestion.setQuestionId(question.getQuestionId());
+        dtoQuestion.setQuestionText(question.getQuestionText());
+        dtoQuestion.setQuestionType(question.getQuestionType());
+        dtoQuestion.setDifficulty(question.getDifficulty());
+        dtoQuestion.setScore(question.getScore());
+
+        return dtoQuestion;
     }
 }
