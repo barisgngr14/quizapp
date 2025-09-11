@@ -64,13 +64,13 @@ router.beforeEach((to, from, next) => {
   const store = useUserStore()
   if (to.meta.requiresAuth && !store.token) {
     return next('/auth/login')
-  } else {
-    next()
   }
   if (store.token && Date.now() > store.tokenExp) {
     store.clearUser()
     return next('/auth/login')
   }
+
+  next()
 })
 
 export default router

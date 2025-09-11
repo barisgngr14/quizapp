@@ -1,5 +1,4 @@
 <script setup>
-    import { ref } from 'vue'
     import { useUserStore } from '@/stores/user'
     import { onMounted , computed} from 'vue'
     import axios from 'axios'
@@ -7,15 +6,8 @@
     import { userItems, adminItems } from '@/utils/sidebar-items'
     import { changeSidebarState } from '@/stores/changeSidebarState'
 
-    //const isSidebarActive = ref(true)
     const router = useRouter()
-    
-    //const toggleSidebar = () => {
-      //  isSidebarActive.value = !isSidebarActive.value
-    //}
-
     const changeState = changeSidebarState()
-
     const userStore = useUserStore()
 
     const logout = () => {
