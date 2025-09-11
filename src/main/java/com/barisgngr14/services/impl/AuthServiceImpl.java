@@ -8,7 +8,6 @@ import com.barisgngr14.repositories.UserRepository;
 import com.barisgngr14.services.IAuthService;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -110,6 +109,7 @@ public class AuthServiceImpl implements IAuthService {
                 .compact();
     }
 
+    @Override
     public String extractUsername(String token) {
         try {
             return Jwts.parser()

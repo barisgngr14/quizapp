@@ -1,6 +1,5 @@
-package com.barisgngr14.controller.impl;
+package com.barisgngr14.controller;
 
-import com.barisgngr14.controller.IQuestionController;
 import com.barisgngr14.dto.DtoNewQuestion;
 import com.barisgngr14.dto.DtoQuestion;
 import com.barisgngr14.services.IQuestionService;
@@ -14,7 +13,7 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping(path = "/api/questions")
-public class QuestionControllerImpl implements IQuestionController {
+public class QuestionControllerImpl {
 
     @Autowired
     private final IQuestionService questionService;
@@ -24,7 +23,6 @@ public class QuestionControllerImpl implements IQuestionController {
     }
 
     @PostMapping(path="/add")
-    @Override
     public ResponseEntity<?> addQuestion(@RequestBody DtoNewQuestion dtoNewQuestion) {
         try{
             questionService.addQuestion(dtoNewQuestion);
@@ -36,7 +34,6 @@ public class QuestionControllerImpl implements IQuestionController {
     }
 
     @GetMapping(path="/fetch")
-    @Override
     public ResponseEntity<List<DtoQuestion>> getAllQuestions() {
         List<DtoQuestion> dtoQuestionList = questionService.getAllQuestions();
         return ResponseEntity.ok(dtoQuestionList);

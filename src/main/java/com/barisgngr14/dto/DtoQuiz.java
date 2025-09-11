@@ -1,6 +1,5 @@
 package com.barisgngr14.dto;
 
-import com.barisgngr14.entities.Group;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class DtoQuiz {
     private String quizId;
-    private Group quizGroup;
+    private String quizGroup;
     private String quizName;
     private LocalDateTime availableTime;
     private LocalTime quizTime;

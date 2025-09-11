@@ -12,7 +12,7 @@ public class QuizMapper {
     public static DtoQuiz toDtoQuiz(Quiz quiz){
         DtoQuiz quizData = new DtoQuiz();
         quizData.setQuizId(quiz.getQuizId());
-        quizData.setQuizGroup(quiz.getQuizGroup());
+        quizData.setQuizGroup(quiz.getQuizGroup().getGroupName());
         quizData.setQuizTime(quiz.getQuizTime());
         quizData.setQuizName(quiz.getQuizName());
         quizData.setAvailableTime(quiz.getAvailableTime());
@@ -23,6 +23,7 @@ public class QuizMapper {
     public static Quiz toQuizEntity(DtoNewQuiz newQuiz){
         Quiz dbNewQuiz = new Quiz();
         Group group = new Group();
+        // DEĞİŞECEK: GROUP ID Yİ İSİMDEN TARA BUL
         group.setGroupId(newQuiz.getQuizGroup());
         dbNewQuiz.setQuizId(String.valueOf(UUID.randomUUID()));
         dbNewQuiz.setQuizName(newQuiz.getQuizName());
