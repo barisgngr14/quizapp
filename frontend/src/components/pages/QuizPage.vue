@@ -131,7 +131,7 @@
       <button class="nav-button left" @click="goToPrevious">&#8592;</button>
 
       <div class="quiz-container" :style="{ borderColor: borderColor, borderStyle: 'solid', borderWidth: '4px' }">
-        <div class="timer-box">Süre: {{ formattedTime }}</div>
+        <div class="timer-box">⏱️: {{ formattedTime }}</div>
 
         <div class="question-area">
           <p class="question-text">{{ currentQuestion }}</p>
@@ -151,6 +151,10 @@
           >
             {{ option.optionText }}
           </button>
+        </div>
+
+        <div class="finish-quiz">
+          <button @click="goBack">Quizi Bitir</button>
         </div>
         
         <div class="footer">
@@ -181,8 +185,9 @@
     top: 20px;
     right: 20px;
     background: red;
-    padding: 30px 15px;
+    padding: 10px 10px;
     border-radius: 12px;
+    border: 2px solid black;
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
     font-weight: bold;
     font-size: 20px;
@@ -319,6 +324,24 @@
 
   .back-btn:hover {
     background: #f0f0f0;
+  }
+
+  .finish-quiz button{
+    position: fixed;
+    bottom: 20vh;
+    right: 15vw;
+    background: red;
+    padding: 10px 10px;
+    border-radius: 12px;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    font-size: 20px;
+    color: white;
+    transition: all 0.3s ease;
+  }
+
+  .finish-quiz button:hover{
+    transform: scale(1.05);
   }
 
 </style>
