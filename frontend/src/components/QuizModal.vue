@@ -1,24 +1,34 @@
 <script setup>
-import { useRouter } from 'vue-router'
+  import { useRouter } from 'vue-router'
 
-const props = defineProps({
-  quiz:{
-    type: Array
+  const props = defineProps({
+    quiz:{
+      type: Object
+    }
+  })
+
+  const router = useRouter()
+
+  function goToQuizPage() {
+    router.push({
+      name: "QuizPage",
+      params: { 
+        quizId: props.quiz.quizId,
+      },
+      query: { 
+        quizTime: props.quiz.quizTime,
+        questionCount: props.quiz.questionCount 
+      }
+    })
   }
-})
 
-const router = useRouter()
-
-function goToQuestion() {
-  router.push('/question')
-}
 </script>
 
 <template>
   <div class="modal-overlay">
     <div class="modal-content">
       <h2>{{ quiz.quizName }} Quizine Hoş Geldin!</h2>
-      <p>⏱️ Süre:{{ quiz.quizTime }}</p>
+      <p>⏱️ Süre: {{ quiz.quizTime }} dk</p>
       <p>❓ Soru Sayısı: {{ quiz.questionCount }}</p>
       <ul class="rules">
         <li>Her soru için tek cevap hakkın var.</li>
@@ -28,7 +38,7 @@ function goToQuestion() {
       </ul>
       <div class="modal-actions">
         <button class="cancel-btn" @click="$emit('close')">İptal</button>
-        <button class="start-btn" @click="goToQuestion">Hazırım!</button>
+        <button class="start-btn" @click="goToQuizPage">Hazırım!</button>
       </div>
     </div>
   </div>
