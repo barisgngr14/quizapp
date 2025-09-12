@@ -5,17 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DtoQuiz {
+public class DtoQuizId {
     private String quizId;
-    private String quizGroup;
-    private String quizName;
-    private LocalDateTime availableTime;
-    private Integer quizTime;
-    private Integer questionCount;
 }

@@ -5,8 +5,8 @@ import com.barisgngr14.dto.DtoUserLogin;
 import com.barisgngr14.dto.DtoUserSignUp;
 
 public interface IAuthService {
-    public String getUserToken(DtoUserLogin userLoginData);
-    public boolean handleSignUp(DtoUserSignUp signupData);
-    public DtoLoginResponse getUserDetail();
+    String getUserToken(DtoUserLogin userLoginData);
+    boolean handleSignUp(DtoUserSignUp signupData);
+    DtoLoginResponse getUserDetail();
     String extractUsername(String token);
 }

@@ -12,4 +12,7 @@ import java.util.List;
 public interface QuizRepository extends JpaRepository<Quiz, String> {
     @Query("SELECT q FROM Quiz q WHERE q.quizGroup.groupId IN :groupIds")
     List<Quiz> findAllByGroupIds(@Param("groupIds") List<String> groupIds);
+
+    @Query("SELECT q.quizTime FROM Quiz q WHERE q.quizId = :quizId")
+    Integer findQuizTime(@Param("quizId") String quizId);
 }

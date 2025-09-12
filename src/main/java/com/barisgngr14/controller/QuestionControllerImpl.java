@@ -1,7 +1,6 @@
 package com.barisgngr14.controller;
 
-import com.barisgngr14.dto.DtoNewQuestion;
-import com.barisgngr14.dto.DtoQuestion;
+import com.barisgngr14.dto.*;
 import com.barisgngr14.services.IQuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,4 +38,8 @@ public class QuestionControllerImpl {
         return ResponseEntity.ok(dtoQuestionList);
     }
 
+    @PostMapping(path = "/by-quiz")
+    public ResponseEntity<DtoQuizScreen> fetchSelectedQuizQuestions(@RequestBody DtoQuizId quizId) {
+        return ResponseEntity.ok(questionService.fetchSelectedQuizQuestions(quizId));
+    }
 }

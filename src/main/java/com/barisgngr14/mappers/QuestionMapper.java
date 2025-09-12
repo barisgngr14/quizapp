@@ -2,12 +2,11 @@ package com.barisgngr14.mappers;
 
 import com.barisgngr14.dto.DtoNewQuestion;
 import com.barisgngr14.dto.DtoQuestion;
+import com.barisgngr14.dto.DtoQuestionInQuiz;
 import com.barisgngr14.entities.Option;
 import com.barisgngr14.entities.Question;
 
-import java.util.Collections;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class QuestionMapper {
 
@@ -32,4 +31,35 @@ public class QuestionMapper {
 
         return dtoQuestion;
     }
+
+    public static List<DtoQuestionInQuiz> toDtoQuestionInQuiz(List<String> questionIds,
+                                                              List<String> questionTexts,
+                                                              Map<String, List<Option>> optionMap,
+                                                              List<Question.Type> questionTypes){
+
+        List<DtoQuestionInQuiz> dtoQuestionInQuizzes = new ArrayList<>();
+
+        List<String> questionTypeStrings = new ArrayList<>();
+        for (Question.Type type : questionTypes) {
+            questionTypeStrings.add(type.name());
+        }
+
+        for (int i = 0; i < questionIds.size(); i++) {
+            DtoQuestionInQuiz dto = new DtoQuestionInQuiz();
+            dto.setQuestionId(questionIds.get(i));
+            dto.setQuestionText(questionTexts.get(i));
+            dto.setQuestionType(questionTypeStrings.get(i));
+            dtoQuestionInQuizzes.add(dto);
+        }
+
+        for (DtoQuestionInQuiz dto : dtoQuestionInQuizzes) {
+            String qid = dto.getQuestionId();
+            List<Option> optionsForThisQuestion = optionMap.getOrDefault(qid, List.of());
+            dto.setOptions(optionsForThisQuestion);
+        }
+
+        return dtoQuestionInQuizzes;
+
+    }
+
 }

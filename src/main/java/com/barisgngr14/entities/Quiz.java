@@ -30,9 +30,8 @@ public class Quiz {
     @Column(name = "question_count")
     private Integer questionCount;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     @Column(name = "quiz_time")
-    private LocalTime quizTime;
+    private Integer quizTime;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @Column(name = "available_time")
