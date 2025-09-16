@@ -12,12 +12,12 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping(path = "/api/questions")
-public class QuestionControllerImpl {
+public class QuestionController {
 
     @Autowired
     private final IQuestionService questionService;
 
-    public QuestionControllerImpl(IQuestionService questionService) {
+    public QuestionController(IQuestionService questionService) {
         this.questionService = questionService;
     }
 

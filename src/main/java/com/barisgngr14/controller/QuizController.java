@@ -13,7 +13,7 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping(path = "/api/quizzes")
-public class QuizControllerImpl {
+public class QuizController {
 
     @Autowired
     private IQuizService quizService;

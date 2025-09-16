@@ -13,12 +13,12 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping(path = "/api")
-public class AuthControllerImpl {
+public class AuthController {
 
     @Autowired
     private final IAuthService authService;
 
-    public AuthControllerImpl(IAuthService authService) {
+    public AuthController(IAuthService authService) {
         this.authService = authService;
     }
 
