@@ -71,11 +71,13 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const store = useUserStore()
   if (to.meta.requiresAuth && !store.token) {
-    return next('/auth/login')
+    next('/auth/login')
+    return
   }
   if (store.token && Date.now() > store.tokenExp) {
     store.clearUser()
-    return next('/auth/login')
+    next('/auth/login')
+    return
   }
 
   next()

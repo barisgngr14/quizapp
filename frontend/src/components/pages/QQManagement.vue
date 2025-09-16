@@ -1,6 +1,77 @@
 <script setup>
-    import AddItemForms from '../AddItemForms.vue';
-    import { openModal } from '@/utils/useModal';
+    import { ref, reactive , onMounted} from "vue";
+    import { EditOutlined, CloseOutlined, SearchOutlined } from "@ant-design/icons-vue";
+    import AddItemForms from "../AddItemForms.vue";
+    import { openModal } from "@/utils/useModal";
+    import axios from "axios";
+
+    const dataQuestions = ref([]);
+    const dataQuizzes = ref([]);
+
+    onMounted(async()=>{
+        const responseQuestion = await axios.get("http://localhost:8080/api/questions/fetch")
+        const responseQuiz = await axios.get("http://localhost:8080/api/quizzes/fetch")
+
+        dataQuestions.value = responseQuestion.data
+        dataQuizzes.value = responseQuiz.data
+    })
+
+    const questionState = reactive({ searchText: "", searchedColumn: "" });
+
+    const columnsQuestions = [
+        { title: "ID", key: "index", scopedSlots: { customRender: 'index' }},
+        {
+            title: "Soru",
+            dataIndex: "questionText",
+            key: "questionText",
+            customFilterDropdown: true,
+            onFilter: (value, record) => record.questionText.toLowerCase().includes(value.toLowerCase())
+        },
+        { title: "İşlem", key: "actions" }
+    ];
+
+    const quizState = reactive({ searchText: "", searchedColumn: "" });
+
+    const columnsQuizzes = [
+        { title: "ID", key: "index", scopedSlots: { customRender: 'index' }},
+        { title: "Grup", dataIndex: "quizGroup", key: "quizGroup" },
+        {
+            title: "Quiz",
+            dataIndex: "quizName",
+            key: "quizName",
+            customFilterDropdown: true,
+            onFilter: (value, record) => record.quizName.toLowerCase().includes(value.toLowerCase())
+        },
+        { title: "İşlem", key: "actions" }
+    ];
+
+    const handleSearch = (selectedKeys, confirm, dataIndex, state) => {
+        confirm();
+        state.searchText = selectedKeys[0];
+        state.searchedColumn = dataIndex;
+    };
+
+    const handleReset = (clearFilters, state) => {
+        clearFilters({ confirm: true });
+        state.searchText = "";
+    };
+
+    const editQuestion = (record) => {
+        openModal("question", record);
+    };
+
+    const deleteQuestion = (questionId) => {
+        dataQuestions.value = dataQuestions.value.filter((q) => q.questionId !== questionId);
+    };
+
+    const editQuizzes = (record) => {
+        openModal("quiz", record);
+    };
+
+    const deleteQuiz = (quizId) => {
+        dataQuizzes.value = dataQuizzes.value.filter((i) => i.quizId !== quizId);
+    };
+
 </script>
 
 <template>
@@ -8,327 +79,145 @@
         <div class="section-label">
             <h1>SORU/QUIZ YÖNETİMİ</h1>
         </div>
-        <div class="searchbar-container">
-            <div class="search-question">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Sorular içinde arayın..." class="input-field">
-            </div>
-            <div class="search-quiz">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Quizler içinde arayın..." class="input-field">
-            </div>
-        </div>
-        <div class="management-container">
-            <table class="question-management">
-                <thead>
-                    <tr>
-                        <th colspan="3">SORU HAVUZU</th>
-                    </tr>
-                    <tr>
-                        <th>ID</th>
-                        <th>Soru Metni</th>
-                        <th>İşlem</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>BİTES ne zaman kurulmuştur?</td>
-                        <td class="table-buttons">
-                            <button class="edit"><i class="fa-solid fa-pencil"></i></button>
-                            <button class="delete"><i class="fa-solid fa-x"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>BİTES ne zaman kurulmuştur?</td>
-                        <td class="table-buttons">
-                            <button class="edit"><i class="fa-solid fa-pencil"></i></button>
-                            <button class="delete"><i class="fa-solid fa-x"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>BİTES ne zaman kurulmuştur?</td>
-                        <td class="table-buttons">
-                            <button class="edit"><i class="fa-solid fa-pencil"></i></button>
-                            <button class="delete"><i class="fa-solid fa-x"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>BİTES ne zaman kurulmuştur?</td>
-                        <td class="table-buttons">
-                            <button class="edit"><i class="fa-solid fa-pencil"></i></button>
-                            <button class="delete"><i class="fa-solid fa-x"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>BİTES ne zaman kurulmuştur?</td>
-                        <td class="table-buttons">
-                            <button class="edit"><i class="fa-solid fa-pencil"></i></button>
-                            <button class="delete"><i class="fa-solid fa-x"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <table class="quiz-management">
-                <thead>
-                    <tr>
-                        <th colspan="4">QUIZLER</th>
-                    </tr>
-                    <tr>
-                        <th>ID</th>
-                        <th>Grup</th>
-                        <th>Quiz</th>
-                        <th>İşlem</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Herkes</td>
-                        <td>BİTES Weekly</td>
-                        <td class="table-buttons">
-                            <button class="edit"><i class="fa-solid fa-pencil"></i></button>
-                            <button class="delete"><i class="fa-solid fa-x"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>Herkes</td>
-                        <td>BİTES Weekly</td>
-                        <td class="table-buttons">
-                            <button class="edit"><i class="fa-solid fa-pencil"></i></button>
-                            <button class="delete"><i class="fa-solid fa-x"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>Herkes</td>
-                        <td>BİTES Weekly</td>
-                        <td class="table-buttons">
-                            <button class="edit"><i class="fa-solid fa-pencil"></i></button>
-                            <button class="delete"><i class="fa-solid fa-x"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>Herkes</td>
-                        <td>BİTES Weekly</td>
-                        <td class="table-buttons">
-                            <button class="edit"><i class="fa-solid fa-pencil"></i></button>
-                            <button class="delete"><i class="fa-solid fa-x"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>Herkes</td>
-                        <td>BİTES Weekly</td>
-                        <td class="table-buttons">
-                            <button class="edit"><i class="fa-solid fa-pencil"></i></button>
-                            <button class="delete"><i class="fa-solid fa-x"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="add-buttons">
-            <a-button @click="openModal('question')"><i class="fa-solid fa-plus"></i> Soru Ekle</a-button>
-            <a-button @click="openModal('quiz')"><i class="fa-solid fa-plus"></i> Quiz Ekle</a-button>
-        </div>
 
-        <add-item-forms></add-item-forms>
+        <div class="management-container">
+            <a-card title="Soru Havuzu" class="custom-card">
+                <a-table :data-source="dataQuestions" :columns="columnsQuestions" rowKey="questionId" bordered :pagination="{ pageSize: 5 }" :filtered-value="questionState.searchText ? [questionState.searchText] : null">
+                    <template #customFilterDropdown="{ setSelectedKeys, selectedKeys, confirm, clearFilters, column }">
+                        <div style="padding: 8px">
+                            <a-input ref="questionSearchInput" :placeholder="`Ara ${column.dataIndex}`"
+                                :value="selectedKeys[0]" style="width: 188px; margin-bottom: 8px; display: block"
+                                @change="e => setSelectedKeys(e.target.value ? [e.target.value] : [])"
+                                @pressEnter="handleSearch(selectedKeys, confirm, column.dataIndex, questionState)" />
+                            <a-button type="primary" size="small" style="width: 90px; margin-right: 8px"
+                                @click="handleSearch(selectedKeys, confirm, column.dataIndex, questionState)">
+                                <template #icon>
+                                    <SearchOutlined />
+                                </template>
+                                Ara
+                            </a-button>
+                            <a-button size="small" style="width: 90px" @click="handleReset(clearFilters, questionState)">
+                                Temizle
+                            </a-button>
+                        </div>
+                    </template>
+                    <template #customFilterIcon="{ filtered }">
+                        <SearchOutlined :style="{ color: filtered ? '#108ee9' : undefined }" />
+                    </template>
+                    <template #bodyCell="{ column, record , index}">
+                        <span v-if="column.key === 'index'">
+                            {{ index + 1 }}
+                        </span>
+                        <span v-else-if="column.key !== 'actions'">
+                            {{ record[column.dataIndex] }}
+                        </span>
+                        <span v-else>
+                            <a-button type="link" @click="editQuestion(record)">
+                                <template #icon>
+                                    <EditOutlined />
+                                </template>
+                            </a-button>
+                            <a-button type="link" danger @click="deleteQuestion(record.questionId)">
+                                <template #icon>
+                                    <CloseOutlined />
+                                </template>
+                            </a-button>
+                        </span>
+                    </template>
+                </a-table>
+                <div class="actions">
+                    <a-button type="primary" @click="openModal('question')">
+                        <i class="fa-solid fa-plus"></i> Soru Ekle
+                    </a-button>
+                </div>
+            </a-card>
+
+            <a-card title="Quizler" class="custom-card">
+                <a-table :data-source="dataQuizzes" :columns="columnsQuizzes" rowKey="quizId" bordered :pagination="{ pageSize: 5 }"  :filtered-value="quizState.searchText ? [quizState.searchText] : null">
+                    <template #customFilterDropdown="{ setSelectedKeys, selectedKeys, confirm, clearFilters, column }">
+                        <div style="padding: 8px">
+                            <a-input ref="quizSearchInput" :placeholder="`Ara ${column.dataIndex}`" :value="selectedKeys[0]"
+                                style="width: 188px; margin-bottom: 8px; display: block"
+                                @change="e => setSelectedKeys(e.target.value ? [e.target.value] : [])"
+                                @pressEnter="handleSearch(selectedKeys, confirm, column.dataIndex, quizState)" />
+                            <a-button type="primary" size="small" style="width: 90px; margin-right: 8px"
+                                @click="handleSearch(selectedKeys, confirm, column.dataIndex, quizState)">
+                                <template #icon>
+                                    <SearchOutlined />
+                                </template>
+                                Ara
+                            </a-button>
+                            <a-button size="small" style="width: 90px" @click="handleReset(clearFilters, quizState)">
+                                Temizle
+                            </a-button>
+                        </div>
+                    </template>
+                    <template #customFilterIcon="{ filtered }">
+                        <SearchOutlined :style="{ color: filtered ? '#108ee9' : undefined }" />
+                    </template>
+                    <template #bodyCell="{ column, record , index}">
+                        <span v-if="column.key === 'index'">
+                            {{ index + 1 }}
+                        </span>
+                        <span v-else-if="column.key !== 'actions'">
+                            {{ record[column.dataIndex] }}
+                        </span>
+                        <span v-else>
+                            <a-button type="link" @click="editQuizzes(record)">
+                                <template #icon>
+                                    <EditOutlined />
+                                </template>
+                            </a-button>
+                            <a-button type="link" danger @click="deleteQuiz(record.quizId)">
+                                <template #icon>
+                                    <CloseOutlined />
+                                </template>
+                            </a-button>
+                        </span>
+                    </template>
+                </a-table>
+                <div class="actions">
+                    <a-button type="primary" @click="openModal('quiz')">
+                        <i class="fa-solid fa-plus"></i> Quiz Ekle
+                    </a-button>
+                </div>
+            </a-card>
+        </div>
+        <add-item-forms v-if="dataQuestions.length" :questions="dataQuestions"></add-item-forms>
     </section>
 </template>
 
 <style scoped>
-    .qq-management{
+    .qq-management {
         width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
-    .section-label{
+    .section-label {
+        text-align: center;
+        margin: 2rem 0;
+    }
+
+    .management-container {
+        margin-top: 2rem;
         display: flex;
         justify-content: center;
-        align-items: center;
-        height: calc(20vh - 66px);
-    }
-
-    .input-field {
+        align-items: flex-start;
+        gap: 2rem;
         width: 100%;
-        padding: 10px 10px 10px 35px; /* ikon için boşluk */
-        border: 1.5px solid #ccc;
-        border-radius: 15px;
     }
 
-    .search-question i,
-    .search-quiz i{
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #888;
+    .custom-card {
+        width: 40%;
+        min-width: 400px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
-    .search-quiz i,
-    .search-question i{
-        padding-left: 8px;
-    }
-
-    .searchbar-container,
-    .add-buttons{
-        position: relative;
-        width: 100%;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        align-items: center;
-        padding: 0.5rem 0;
-    }
-
-    .searchbar-container{
-        height: calc(20vh - 66px);
-    }
-
-    .search-question,
-    .search-quiz{
-        position: sticky;
-        display: inline-flex;
-        min-width: 350px;
-        box-sizing: border-box;
-    }
-
-    .management-container{
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        align-items: center;
-        width: 100%;
-        height: calc(45vh - 66px);
-    }
-
-    .question-management,
-    .quiz-management{
-        width: 38%;
-        font-family: 'Segoe UI', sans-serif;
-        box-shadow: 18px 18px 18px rgba(0, 0, 0, 0.08);
-        border-collapse: separate; 
-        border-spacing: 0;
-        border: 2px solid rgb(221, 181, 246);
-        border-radius: 12px;
-        overflow: hidden;
-    }
-
-    .question-management thead,
-    .quiz-management thead{
-        background-color: #fffaf5;;
-        color: #333;
+    .actions {
+        margin-top: 16px;
         text-align: center;
-        font-size: 1.2rem;
     }
-
-    .question-management th,
-    .quiz-management th{
-        padding: 1rem;
-    }
-
-    .question-management th,
-    .question-management td,
-    .quiz-management th,
-    .quiz-management td {
-        border-bottom: 1px solid rgb(221, 181, 246);
-    }
-
-    .question-management tbody td,
-    .quiz-management tbody td{
-        padding: 0.75rem 1rem;
-        text-align: center;
-        font-size: 1rem;
-        color: #444;
-    }
-
-    .question-management tbody tr:nth-child(even),
-    .quiz-management tbody tr:nth-child(even){
-        background-color: #fffaf5;
-    }
-
-    .question-management tbody tr,
-    .quiz-management tbody tr{
-        background-color: rgb(210, 206, 206);
-    }
-
-    .question-management tbody tr:hover,
-    .quiz-management tbody tr:hover{
-        background-color: rgb(230, 245, 244);
-        transition: background-color 0.3s ease;
-    }
-
-    .question-management tr:not(:last-child) td,
-    .quiz-management tr:not(:last-child) td {
-        border-bottom: 1px solid rgb(221, 181, 246);
-    }
-
-    .question-management td:not(:last-child),
-    .question-management th:not(:last-child),
-    .quiz-management td:not(:last-child),
-    .quiz-management th:not(:last-child) {
-        border-right: 1px solid rgb(221, 181, 246);
-
-    }
-
-    .question-management thead tr:nth-child(2) th,
-    .quiz-management thead tr:nth-child(2) th {
-        border-top: 1px solid rgb(221, 181, 246);
-    }
-
-    .question-management tr:last-child td,
-    .quiz-management tr:last-child td {
-        border-bottom: none;
-    }
-
-    .add-buttons{
-        height: 15vh;
-    }
-
-    .add-buttons button{
-        background-color: rgb(179, 244, 187);
-        border: 1.5px solid black;
-        border-radius: 15px;
-        height: 40px;
-        transition: 0.3s ease;
-    }
-
-    .add-buttons button:hover{
-        transform: scale(1.05);
-        background-color: rgb(195, 240, 236);
-    }
-
-    .table-buttons {
-        text-align: center; 
-        vertical-align: middle; 
-        white-space: nowrap; 
-    }
-
-    .edit,
-    .delete{
-        border: none;
-        border-radius: 15px;
-        display: inline-block;
-        margin: 0 5px;
-        height: 25px;
-        color: white;
-        transition: transform 0.3s ease;
-    }
-
-    .edit{
-        background-color: rgb(0, 119, 255);
-    }
-    .delete{
-        background-color: red;
-    }
-
-    .table-buttons button:hover{
-        transform: scale(1.1);
-    }
-
+    
 </style>
