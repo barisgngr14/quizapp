@@ -18,7 +18,6 @@ public class QuizController {
     @Autowired
     private IQuizService quizService;
 
-
     @GetMapping(path = "/fetch")
     public ResponseEntity<List<DtoQuiz>> fetchAllQuizzes() {
         return ResponseEntity.ok(quizService.fetchAllQuizzes());

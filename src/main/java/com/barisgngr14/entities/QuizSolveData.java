@@ -13,14 +13,17 @@ import java.time.LocalTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="quiz_solve_data")
+@Table(
+        name = "quiz_solve_data",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "quiz_id"})
+)
 public class QuizSolveData {
 
     @Id
     @Column(name="data_id")
     private String dataId;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="user_id")
     private User user;
 
@@ -29,8 +32,7 @@ public class QuizSolveData {
     private Quiz quiz;
 
     @Column(name = "quiz_solve_time")
-    @DateTimeFormat(iso= DateTimeFormat.ISO.TIME)
-    private LocalTime quizSolveTime;
+    private Integer quizSolveTime;
 
     @Column(name = "correct_count")
     private Integer correctCount;
