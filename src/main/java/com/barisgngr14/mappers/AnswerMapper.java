@@ -17,8 +17,10 @@ public class AnswerMapper {
                     answer.setAnswerId(String.valueOf(UUID.randomUUID()));
                     answer.setOption(o);
                     answer.setQuizSolveData(solveData);
-                    answer.setQuestion(o.getQuestion());
-                    answer.setIsCorrect(o.getIsCorrect());
+                    if(o != null){
+                        answer.setQuestion(o.getQuestion());
+                        answer.setIsCorrect(o.getIsCorrect());
+                    }
                     return answer;
                 })
                 .collect(Collectors.toList());
