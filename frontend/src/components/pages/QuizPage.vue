@@ -3,6 +3,7 @@
   import axios from 'axios'
   import { useRoute, useRouter } from 'vue-router'
   import { useUserStore } from '@/stores/user'
+  import { useAnswerStore } from '@/stores/answer'
 
   const questions = ref({ quizTime: 0, questions: []})
   const currentIndex = ref(0)
@@ -13,8 +14,10 @@
   const borderColor = ref("#000")
   const route = useRoute()
   const store = useUserStore()
+  const answerStore = useAnswerStore()
   const router = useRouter()
   const timeLeft = ref(0)
+  const solveDataId = ref("")
 
   const fetchQuestions = async () => {
     try {
@@ -32,9 +35,42 @@
     }
   }
 
+  const createEmptySolveData = async() =>{
+    try {
+      const response = await axios.post(
+        'http://localhost:8080/api/solvedata/create',
+        { quizId: route.params.quizId },
+        { headers: { Authorization: `${store.token}`}}
+      )
+      solveDataId.value = response.data
+    } catch (err) {
+      error.value = 'Oluşturma hatası.'
+      console.error('API isteği hatası:', err)
+    }
+  }
+
   const setRandomBorderColor = () => {
     const colors = ['#FF6B6B', '#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#00BCD4']
     borderColor.value = colors[Math.floor(Math.random() * colors.length)]
+  }
+
+  const submitQuiz = async () => {
+    const quizPayload = {
+      answers: Object.values(answerStore.answerData),
+      solveDataId: solveDataId,
+      solveTime: parseInt(route.query.quizTime, 10) * 60 - timeLeft.value,
+      timeLeft: timeLeft.value
+    }
+
+    try {
+      await axios.post('http://localhost:8080/api/answer/save',
+        { quizPayload: quizPayload }
+      )
+      router.push("/app/enter-quiz")
+    } catch (error) {
+      console.error('API isteği hatası:', error)
+    }
+    
   }
 
   const goBack = () => {
@@ -49,17 +85,11 @@
 
   const submitAnswer = (answer) => {
     clearInterval(timer.value)
-    const currentQuestion = questions.value[currentIndex.value]
+    const currentQuestion = questions.value.questions[currentIndex.value]
 
-    let isCorrect = false
-    if (currentQuestion.questionType === 'MULTIPLE_CHOICE') {
-      isCorrect = currentQuestion.correctOption.optionId === answer.optionId
-    } else {
-      isCorrect = currentQuestion.correctOption.optionText.toLowerCase() === answer.toLowerCase()
-    }
-
-    console.log("Cevap:", answer)
-    console.log("Doğru mu?", isCorrect)
+    answerStore.answer(currentQuestion.questionId, answer)
+    console.log(timeLeft.value)
+    console.log(parseInt(route.query.quizTime, 10) * 60 - timeLeft.value)
 
     startTimer()
   }
@@ -87,11 +117,6 @@
     return questions.value.questions[currentIndex.value].questionText || null
   })
 
-  const currentQuestionType = computed(() => {
-    const questionType = questions.value.questions[currentIndex.value].questionType;
-    return questionType;
-  })
-
   const currentOptions = computed(()=>{
     return questions.value.questions[currentIndex.value].options
   })
@@ -107,6 +132,9 @@
     if (route.query.quizTime) {
       timeLeft.value = parseInt(route.query.quizTime, 10) * 60
     }
+    await createEmptySolveData()
+    answerStore.initialize(questions.value.questions)
+    answerStore.setSolveDataId(solveDataId.value)
     startTimer()
     setRandomBorderColor()
   });
@@ -137,12 +165,7 @@
           <p class="question-text">{{ currentQuestion }}</p>
         </div>
 
-        <div v-if="currentQuestionType === 'TRUE_FALSE'" class="answer-buttons">
-          <button @click="submitAnswer(true)" class="btn correct">Doğru</button>
-          <button @click="submitAnswer(false)" class="btn incorrect">Yanlış</button>
-        </div>
-
-        <div v-if="currentQuestionType === 'MULTIPLE_CHOICE'" class="answer-buttons">
+        <div class="answer-buttons">
           <button
             v-for="option in currentOptions"
             :key="option.optionId"
@@ -154,7 +177,7 @@
         </div>
 
         <div class="finish-quiz">
-          <button @click="goBack">Quizi Bitir</button>
+          <button @click="submitQuiz">Quizi Bitir</button>
         </div>
         
         <div class="footer">
@@ -244,24 +267,6 @@
   .btn:hover {
     transform: scale(1.05);
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  }
-
-  .correct {
-    background-color: #4caf50;
-    color: white;
-  }
-
-  .correct:hover {
-    background-color: #43a047;
-  }
-
-  .incorrect {
-    background-color: #f44336;
-    color: white;
-  }
-
-  .incorrect:hover {
-    background-color: #e53935;
   }
 
   .footer {

@@ -1,6 +1,5 @@
 <script setup>
     import { useRouter } from 'vue-router'
-    import { useUserStore } from "@/stores/user"
 
     const router = useRouter()
 
@@ -9,7 +8,7 @@
 
         if (router.currentRoute.value.path === targetRoute) {
             window.location.reload()
-        }else{
+        } else {
             router.push(targetRoute)
         }
         

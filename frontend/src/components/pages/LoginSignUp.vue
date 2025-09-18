@@ -46,20 +46,20 @@
       return
     }
 
-  try {
-    const data = await axios.post('http://localhost:8080/api/signup', {
-      name: name.value,
-      surname: surname.value,
-      username: username.value,
-      email: email.value,
-      password: password.value
-    })
-    alert('Kayıt başarılı. Artık giriş yapabilirsiniz.' + data)
-  } catch (error) {
-    console.error('Hata:', error)
-    alert(error.response?.data || 'Sunucu hatası.')
+    try {
+      const data = await axios.post('http://localhost:8080/api/signup', {
+        name: name.value,
+        surname: surname.value,
+        username: username.value,
+        email: email.value,
+        password: password.value
+      })
+      alert('Kayıt başarılı. Artık giriş yapabilirsiniz.' + data)
+    } catch (error) {
+      console.error('Hata:', error)
+      alert(error.response?.data || 'Sunucu hatası.')
+    }
   }
-}
 </script>
 
 <template>
