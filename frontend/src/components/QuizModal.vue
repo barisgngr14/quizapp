@@ -17,7 +17,8 @@
       },
       query: { 
         quizTime: props.quiz.quizTime,
-        questionCount: props.quiz.questionCount 
+        questionCount: props.quiz.questionCount,
+        quizName: props.quiz.quizName 
       }
     })
   }

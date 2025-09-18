@@ -4,11 +4,14 @@
   import { useRoute, useRouter } from 'vue-router'
   import { useUserStore } from '@/stores/user'
   import { useAnswerStore } from '@/stores/answer'
+  import { Modal } from 'ant-design-vue';
+  import { h } from 'vue';
 
   const questions = ref({ quizTime: 0, questions: []})
   const currentIndex = ref(0)
   const loading = ref(true)
   const error = ref(null)
+  const selectedOptionIds = ref({})
   
   const timer = ref(0)
   const borderColor = ref("#000")
@@ -67,25 +70,33 @@
         quizPayload
       )
       console.log(response.data)
-      router.push("/app/enter-quiz")
+      router.push({
+        path: '/app/enter-quiz',
+        query: {
+          quizName: route.query.quizName,
+        }
+      }).then(() => {
+        Modal.success({
+          title: `${route.query.quizName} quizini başarıyla tamamladınız!`,
+          content: h('div', {}, [
+            h('p', `Çözme Süreniz: ${response.data.solveTime}`),
+            h('p', `Doğru Sayısı: ${response.data.correctCount}`),
+            h('p', `Yanlış Sayısı: ${response.data.wrongCount}`),
+            h('p', `Boş Sayısı: ${response.data.unansweredCount}`),
+            h('p', `Toplam Puan: ${response.data.quizScore}`),
+          ]),
+          okText: `Cevapları Görüntüle`,
+          onOk() {
+            router.push('/app/scoreboard')
+          }
+        })
+      }).catch(err => {
+        console.error("Yönlendirme hatası:", err);
+      });
     } catch (error) {
       console.error('API isteği hatası:', error)
     }
     
-  }
-
-  const goBack = () => {
-
-    const quizPayload = {
-      answers: answerStore.answerData,
-      solveDataId: answerStore.solveDataId,
-      solveTime: parseInt(route.query.quizTime, 10) * 60 - timeLeft.value,
-      timeLeft: timeLeft.value
-    }
-
-    console.log(quizPayload)
-
-    router.push("/app/enter-quiz")
   }
 
   const startTimer = () => {
@@ -97,7 +108,7 @@
   const submitAnswer = (answer) => {
     clearInterval(timer.value)
     const currentQuestion = questions.value.questions[currentIndex.value]
-
+    selectedOptionIds.value[currentQuestion.questionId] = answer.optionId
     answerStore.answer(currentQuestion.questionId, answer)
     console.log(timeLeft.value)
     console.log(parseInt(route.query.quizTime, 10) * 60 - timeLeft.value)
@@ -138,6 +149,25 @@
     return `${minutes}:${seconds}`
   })
 
+  const info = () => {
+    Modal.confirm({
+      title: 'Quizi Bitir',
+      content: h('div', {}, [
+        h('p', 'Bitirmek istediğinize emin misiniz?'),
+        h('p', 'Şu ana kadarki işaretlemeleriniz geçerli sayılacak ve quizi bir daha alamayacaksınız.'),
+      ]),
+      okText: 'Evet, Bitir',
+      cancelText: 'Hayır, Devam Et',
+      onOk() {
+        submitQuiz();
+      },
+      onCancel() {
+        console.log('Kullanıcı iptal etti');
+      },
+    });
+  };
+
+
   onMounted(async() => {
     await fetchQuestions()
     if (route.query.quizTime) {
@@ -155,7 +185,7 @@
 <template>
   <div class="page-wrapper">
     <div class="top-bar">
-      <button class="back-btn" @click="goBack">← Geri Dön</button>
+      <button class="back-btn" @click="info">← Geri Dön</button>
     </div>
     
     <div v-if="loading" class="quiz-container">
@@ -181,14 +211,14 @@
             v-for="option in currentOptions"
             :key="option.optionId"
             @click="submitAnswer(option)"
-            class="btn option"
+            :class="['btn option', { selected: selectedOptionIds[option.question.questionId] === option.optionId }]"
           >
             {{ option.optionText }}
           </button>
         </div>
 
         <div class="finish-quiz">
-          <button @click="submitQuiz">Quizi Bitir</button>
+          <button @click="info">Quizi Bitir</button>
         </div>
         
         <div class="footer">
@@ -313,12 +343,17 @@
     background-color: #798894;
     color: white;
     margin-left: 5px;
+    transition: background-color 0.3s ease;
   }
 
   .btn.option:hover {
     background-color: #1976d2;
     transform: scale(1.05);
   } 
+
+  .btn.option.selected {
+    background-color: #1976d2;
+  }
 
   .top-bar {
     position: fixed;
@@ -342,10 +377,13 @@
     background: #f0f0f0;
   }
 
-  .finish-quiz button{
+  .finish-quiz{
     position: fixed;
     bottom: 20vh;
     right: 15vw;
+  }
+
+  .finish-quiz button{
     background: red;
     padding: 10px 10px;
     border-radius: 12px;
