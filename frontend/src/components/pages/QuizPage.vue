@@ -56,16 +56,17 @@
 
   const submitQuiz = async () => {
     const quizPayload = {
-      answers: Object.values(answerStore.answerData),
-      solveDataId: solveDataId,
+      answers: answerStore.answerData,
+      solveDataId: answerStore.solveDataId,
       solveTime: parseInt(route.query.quizTime, 10) * 60 - timeLeft.value,
       timeLeft: timeLeft.value
     }
 
     try {
-      await axios.post('http://localhost:8080/api/answer/save',
-        { quizPayload: quizPayload }
+      const response = await axios.post('http://localhost:8080/api/answer/save',
+        quizPayload
       )
+      console.log(response.data)
       router.push("/app/enter-quiz")
     } catch (error) {
       console.error('API isteği hatası:', error)
@@ -74,6 +75,16 @@
   }
 
   const goBack = () => {
+
+    const quizPayload = {
+      answers: answerStore.answerData,
+      solveDataId: answerStore.solveDataId,
+      solveTime: parseInt(route.query.quizTime, 10) * 60 - timeLeft.value,
+      timeLeft: timeLeft.value
+    }
+
+    console.log(quizPayload)
+
     router.push("/app/enter-quiz")
   }
 
