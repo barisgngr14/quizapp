@@ -5,12 +5,7 @@ export const useModal = reactive({
   modalType: null,
 });
 
-export function openModal(type) {
+export function openEditModal(type) {
   useModal.modalType = type;
   useModal.modal2Visible = true;
-}
-
-export function closeModal() {
-  useModal.modal2Visible = false;
-  useModal.modalType = null;
 }

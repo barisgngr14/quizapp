@@ -74,14 +74,14 @@
 <template>
     <header>
         <button class="sidebar-button" @click="changeState.toggleSidebar"><i class="fa-solid fa-bars"></i></button>
-        <img src="/favicon.ico" alt="logo">
+        <img src="/logo.ico" alt="logo">
         <h1>QuizUp</h1>  
     </header>
 
     <div class="sidebar" :class="{ open: changeState.isSidebarActive }">
         <button class="close-btn" @click="changeState.toggleSidebar"><i class="fa-solid fa-xmark"></i></button>
         <div class="logo">
-            <img src="/favicon.ico" alt="logo">
+            <img src="/logo.ico" alt="logo">
             <h1>QuizUp</h1>
         </div>
         <div class="profile-details">
@@ -201,6 +201,7 @@
         justify-content: center;
         align-items: center;
         cursor: pointer;
+        gap: 0.5rem;
     }
 
     .profile-details{

@@ -23,7 +23,7 @@
 <template>
     <header>
         <div role="button" class="logo" @click="goHome">
-            <img src="/favicon.ico" alt="logo">
+            <img src="/logo.ico" alt="logo">
             <h1>QuizUp</h1>
         </div>
         <nav>

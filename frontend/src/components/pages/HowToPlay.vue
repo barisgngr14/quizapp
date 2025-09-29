@@ -9,8 +9,8 @@
 
             <div class="howtoplay-content">
                 <div class="howtoplay-row">
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex veritatis similique cupiditate consequuntur non doloribus sequi esse accusamus inventore quasi eius, voluptatem natus assumenda asperiores quam? Nisi ipsam temporibus quod?</p>
-                    <img src="/image.png" alt="" class="image">
+                    <p>"Quize Katıl" sekmesine geçtiğinizde karşınızda sağdaki şekilde görünen bir quiz listesi olacaktır. İstediğiniz quize ait katıl butonuna tıklayarak quizi başlatabilirsiniz.</p>
+                    <img src="/enterquizpage.png" alt="" class="image">
                 </div>
             </div>
 
@@ -108,4 +108,5 @@
         height: auto;
         align-self: center;
     }
+
 </style>

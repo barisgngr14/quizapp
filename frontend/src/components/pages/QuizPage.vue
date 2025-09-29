@@ -70,6 +70,9 @@
         quizPayload
       )
       console.log(response.data)
+
+      const solveTimeInMinutes = Math.floor(response.data.solveTime / 60);
+      const remainingSeconds = response.data.solveTime % 60;
       router.push({
         path: '/app/enter-quiz',
         query: {
@@ -79,7 +82,7 @@
         Modal.success({
           title: `${route.query.quizName} quizini başarıyla tamamladınız!`,
           content: h('div', {}, [
-            h('p', `Çözme Süreniz: ${response.data.solveTime}`),
+            h('p', `Çözme Süreniz: ${solveTimeInMinutes} : ${remainingSeconds}`),
             h('p', `Doğru Sayısı: ${response.data.correctCount}`),
             h('p', `Yanlış Sayısı: ${response.data.wrongCount}`),
             h('p', `Boş Sayısı: ${response.data.unansweredCount}`),

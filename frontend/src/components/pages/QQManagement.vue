@@ -2,11 +2,13 @@
     import { ref, reactive , onMounted} from "vue";
     import { EditOutlined, CloseOutlined, SearchOutlined } from "@ant-design/icons-vue";
     import AddItemForms from "../AddItemForms.vue";
-    import { openModal } from "@/utils/useModal";
+    import { openEditModal } from "@/utils/useModal";
     import axios from "axios";
 
     const dataQuestions = ref([]);
     const dataQuizzes = ref([]);
+    const selectedItem = ref(null)
+    const quizRef = ref(null)
 
     onMounted(async()=>{
         const responseQuestion = await axios.get("http://localhost:8080/api/questions/fetch")
@@ -57,20 +59,27 @@
     };
 
     const editQuestion = (record) => {
-        openModal("question", record);
-    };
+        selectedItem.value = record
+        openEditModal("question")
+    }
 
     const deleteQuestion = (questionId) => {
         dataQuestions.value = dataQuestions.value.filter((q) => q.questionId !== questionId);
     };
 
     const editQuizzes = (record) => {
-        openModal("quiz", record);
+        selectedItem.value = record
+        openEditModal("quiz");
     };
 
     const deleteQuiz = (quizId) => {
         dataQuizzes.value = dataQuizzes.value.filter((i) => i.quizId !== quizId);
     };
+
+    const resetFormState = (modalType) => {
+        quizRef.value?.resetForm()
+        openEditModal(modalType)
+    }
 
 </script>
 
@@ -126,7 +135,7 @@
                     </template>
                 </a-table>
                 <div class="actions">
-                    <a-button type="primary" @click="openModal('question')">
+                    <a-button type="primary" @click="resetFormState('question')">
                         <i class="fa-solid fa-plus"></i> Soru Ekle
                     </a-button>
                 </div>
@@ -177,13 +186,13 @@
                     </template>
                 </a-table>
                 <div class="actions">
-                    <a-button type="primary" @click="openModal('quiz')">
+                    <a-button type="primary" @click="resetFormState('quiz')">
                         <i class="fa-solid fa-plus"></i> Quiz Ekle
                     </a-button>
                 </div>
             </a-card>
         </div>
-        <add-item-forms v-if="dataQuestions.length" :questions="dataQuestions"></add-item-forms>
+        <add-item-forms v-if="dataQuestions.length" :questions="dataQuestions" :record="selectedItem" ref="quizRef"></add-item-forms>
     </section>
 </template>
 

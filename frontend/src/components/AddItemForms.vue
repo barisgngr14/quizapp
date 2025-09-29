@@ -1,23 +1,26 @@
 <script setup>
-    import { reactive, watch, onMounted, ref } from "vue";
+    import { reactive, watch, onMounted, ref, watchEffect} from "vue";
     import { useModal } from "@/utils/useModal";
     import { modalConfigs } from "@/utils/form-items";
     import { questionService, quizService } from "@/utils/api";
     import axios from "axios";
     import { message } from 'ant-design-vue';
+    import dayjs from 'dayjs'
     
     const emit = defineEmits(["quizAdded",'questionAdded']);
     const props = defineProps({
-        questions: Array
+        questions: Array,
+        record: Object
     })
 
     const selectedQuestions = ref([])
     const groupData = ref([])
+    const record = reactive({})
 
     const formState = reactive({
         type: null,
         questions: [{}],
-        options: [{ optiontext: "" , isCorrect: ""}, { optiontext: "" , isCorrect: ""}],
+        options: [{ optionText: "" , isCorrect: ""}, { optionText: "" , isCorrect: ""}],
         answer: "",
 
         quizName: "",
@@ -30,15 +33,15 @@
         difficulty: null,
         questionType: null,
         score: null,
-        correctOption: ""
+        correctOption: null
     });
 
     const addOption = () => {
-        formState.options.push({ optiontext: "" , isCorrect: ""});
+        formState.options.push({ optionText: "" , isCorrect: ""});
     };
 
     const removeOption = (index) => {
-        if (formState.options[index].text === formState.answer) {
+        if (formState.options[index].optionText === formState.answer) {
             formState.answer = "";
         }
         formState.options.splice(index, 1);
@@ -51,35 +54,84 @@
         }).filter(Boolean);
     }
 
-    watch(
-        () => selectedQuestions.value,
-        (newVal, oldVal) => {
-            if (newVal.length > formState.questionCount) {
-                selectedQuestions.value = oldVal;
-                message.warning(`En fazla ${formState.questionCount} soru seçebilirsiniz.`);
+    watch(() => selectedQuestions.value, (newVal, oldVal) => {
+        if (newVal.length > formState.questionCount) {
+            selectedQuestions.value = oldVal;
+            message.warning(`En fazla ${formState.questionCount} soru seçebilirsiniz.`);
+        }
+    });
+
+    // watch(() => formState.questionType, () => {
+    //     formState.correctOption = null;
+    // });
+
+    // watch(() => formState.options, (newVal) => {
+    //     if (!newVal.some((opt) => opt.text === formState.answer)) {
+    //         formState.answer = "";
+    //     }
+    // }, { deep: true });
+
+    watchEffect(() => {
+        if (props.record) {
+
+            Object.keys(record).forEach((key) => delete record[key])
+            console.log(props.record['options'])
+            Object.keys(props.record).forEach((key) => {  
+                let value = props.record[key];
+
+                if (key === "availableTime" && value) {
+                    value = dayjs(value);
+                }
+
+                record[key] = Array.isArray(value)
+                ? [...value] // ✅ Dizi ise kopyala
+                : value && typeof value === "object" && !dayjs.isDayjs(value)
+                    ? Array.isArray(Object.values(value)) // Eğer object ama array-like ise
+                        ? [...Object.values(value)]
+                        : { ...value } // ✅ Düz nesne ise kopyala
+                    : value ?? ""; // ✅ null/undefined ise boş string
+            });
+
+            Object.assign(formState, record);
+            selectedQuestions.value = props.record['questions']?.map(q => q.questionId) ?? [];
+            formState.options = props.record['options']?.map(opt => ({
+                optionId: opt.optionId,
+                optionText: opt.optionText,
+                question: opt.question,
+                isCorrect: opt.isCorrect ?? false
+            })) ?? [];
+            if(props.record['questionType'] === 'TRUE_FALSE'){
+                formState.correctOption = props.record['options']?.find(opt => opt.isCorrect === true)?.isCorrect ?? false;
+            }else{
+                formState.correctOption = props.record['options']?.find(opt => opt.isCorrect === true)?.optionText;
             }
-        },
+            
+            console.log(formState)
+        }
+    });
 
-        () => formState.questionType,
-        (type) => {
-            formState.correctOption = null;
-        },
-
-        () => formState.options,
-        (newVal) => {
-            if (!newVal.some((opt) => opt.text === formState.answer)) {
-                formState.answer = "";
-            }
-        },
-
-        { deep: true }
-    );
 
     const resetForm = () => {
         formState.type = "";
-        formState.options = [{ optiontext: "" , isCorrect: ""}];
+        formState.questions = [{}],
+        formState.options = [{ optionText: "" , isCorrect: ""}];
         formState.answer = "";
+
+        formState.quizName= "",
+        formState.quizGroup = null,
+        formState.questionCount = 1,
+        formState.quizTime = null,
+        formState.availableTime = null,
+
+        formState.questionText = null,
+        formState.difficulty = null,
+        formState.questionType = null,
+        formState.score = null,
+        formState.correctOption = ""
+        selectedQuestions.value = []
     };
+
+    defineExpose({ resetForm })
 
     const groupDataFetched = ref(false);
 
@@ -96,11 +148,6 @@
     }
 
     onMounted(() => {
-        const data = useModal.currentData;
-        if (data) {
-            formState.type = "quiz";
-            formState.answer = ""; 
-        }
         fetchGroupsIfNeeded()
     });
 
@@ -135,8 +182,8 @@
                 ]
             } else {
                 options = formState.options.map(opt => ({
-                    optionText: opt.text,
-                    isCorrect: opt.text === formState.correctOption
+                    optionText: opt.optionText,
+                    isCorrect: opt.optionText === formState.correctOption
                 }))
             }
             
@@ -162,8 +209,8 @@
     function normalizeTreeData(questions) {
         return questions.map((q, index) => ({
             title: `Soru ${index + 1}`, 
-            value: `q-${index}`,                          
-            key: `q-${index}`,                            
+            value: q.questionId,                          
+            key: q.questionId,                            
             children: [] ,
             label: `Soru ${index + 1}: ${q.questionText}`                               
         }));
@@ -204,20 +251,20 @@
                 <template v-if="formState.questionType === 'MULTIPLE_CHOICE'">
                     <a-form-item label="Şıklar" name="options">
                         <div v-for="(option, index) in formState.options" :key="option.id" class="option-row">
-                            <a-input v-model:value="option.text" :placeholder="`Şık ${index + 1}`" style="width: 70%" />
+                            <a-input v-model:value="option.optionText" :placeholder="`Şık ${index + 1}`" style="width: 70%" />
                             <a-button type="link" danger @click="removeOption(index)" v-if="formState.options.length > 2">
                                 Sil
                             </a-button>
                         </div>
-                            <a-button type="dashed" block @click="addOption" style="margin-top: 10px">
-                                + Şık Ekle
-                            </a-button>
-                        </a-form-item>
+                        <a-button type="dashed" block @click="addOption" style="margin-top: 10px">
+                            + Şık Ekle
+                        </a-button>
+                    </a-form-item>
 
                     <a-form-item label="Doğru Cevap" name="correctOption">
                         <a-select v-model:value="formState.correctOption" placeholder="Doğru şıkkı seçiniz" allowClear>
-                            <a-select-option v-for="(opt, i) in formState.options" :key="i" :value="opt.text">
-                                {{ opt.text || `Şık ${i + 1}` }}
+                            <a-select-option v-for="(opt, i) in formState.options" :key="i" :value="opt.optionText">
+                                {{ opt.optionText || `Şık ${i + 1}` }}
                             </a-select-option>
                         </a-select>
                     </a-form-item>
