@@ -2,6 +2,7 @@ package com.barisgngr14.controller;
 
 import com.barisgngr14.dto.DtoNewQuiz;
 import com.barisgngr14.dto.DtoQuiz;
+import com.barisgngr14.dto.DtoQuizForm;
 import com.barisgngr14.services.IQuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class QuizController {
     private IQuizService quizService;
 
     @GetMapping(path = "/fetch")
-    public ResponseEntity<List<DtoQuiz>> fetchAllQuizzes() {
+    public ResponseEntity<List<DtoQuizForm>> fetchAllQuizzes() {
         return ResponseEntity.ok(quizService.fetchAllQuizzes());
     }
 

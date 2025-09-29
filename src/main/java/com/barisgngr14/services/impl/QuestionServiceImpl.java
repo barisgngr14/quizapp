@@ -13,8 +13,10 @@ import com.barisgngr14.services.IQuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,12 +53,33 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
-    public List<DtoQuestion> getAllQuestions() {
+    public List<DtoQuestionForm> getAllQuestions() {
         List<Question> dbQuestions = questionRepository.findAll();
 
+        List<String> questionIds = dbQuestions.stream()
+                .map(Question::getQuestionId)
+                .toList();
+
+        Map<String, List<Option>> questionIdToOptions = questionIds.stream()
+                .collect(Collectors.toMap(
+                        Function.identity(),
+                        optionRepository::findOptionsByQuestion_QuestionId
+                ));
+
         return dbQuestions.stream()
-                .map(QuestionMapper::toDtoQuestion)
-                .collect(Collectors.toList());
+                .map(question -> {
+                    List<Option> options = questionIdToOptions.getOrDefault(question.getQuestionId(), Collections.emptyList());
+                    return new DtoQuestionForm(
+                            question.getQuestionId(),
+                            question.getQuestionText(),
+                            question.getDifficulty(),
+                            question.getQuestionType(),
+                            question.getScore(),
+                            options
+                    );
+                })
+                .toList();
+
     }
 
     @Override

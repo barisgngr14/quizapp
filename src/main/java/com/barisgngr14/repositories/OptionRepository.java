@@ -12,4 +12,6 @@ import java.util.List;
 public interface OptionRepository extends JpaRepository<Option, String> {
     @Query("SELECT o FROM Option o WHERE o.question.questionId IN :questionIds")
     List<Option> findByQuestionIdIn(@Param("questionIds") List<String> questionIds);
+
+    List<Option> findOptionsByQuestion_QuestionId(String questionId);
 }

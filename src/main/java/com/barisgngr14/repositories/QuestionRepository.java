@@ -15,4 +15,6 @@ public interface QuestionRepository extends JpaRepository<Question, String> {
 
     @Query("SELECT q.questionType FROM Question q WHERE q.questionId IN :questionIds")
     List<Question.Type> findQuestionTypes(@Param("questionIds") List<String> questionIds);
+
+    List<Question> findByQuestionIdIn(List<String> ids);
 }

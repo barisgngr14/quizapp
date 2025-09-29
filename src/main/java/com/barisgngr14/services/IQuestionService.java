@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface IQuestionService {
     boolean addQuestion(DtoNewQuestion dtoNewQuestion);
-    List<DtoQuestion> getAllQuestions();
+    List<DtoQuestionForm> getAllQuestions();
     DtoQuizScreen fetchSelectedQuizQuestions(DtoQuizId quizId);
 }

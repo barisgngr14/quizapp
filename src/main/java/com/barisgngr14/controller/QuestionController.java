@@ -33,8 +33,8 @@ public class QuestionController {
     }
 
     @GetMapping(path="/fetch")
-    public ResponseEntity<List<DtoQuestion>> getAllQuestions() {
-        List<DtoQuestion> dtoQuestionList = questionService.getAllQuestions();
+    public ResponseEntity<List<DtoQuestionForm>> getAllQuestions() {
+        List<DtoQuestionForm> dtoQuestionList = questionService.getAllQuestions();
         return ResponseEntity.ok(dtoQuestionList);
     }
 
